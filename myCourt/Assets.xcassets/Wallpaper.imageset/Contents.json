@@ -1,0 +1,21 @@
+{
+  "images" : [
+    {
+      "filename" : "papers.co-mr98-basketball-rim-red-sports-dark-41-iphone-wallpaper.jpg",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "3x"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

@@ -14,6 +14,8 @@
 		2C2EB1792A437381009D33E3 /* myCourtTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C2EB1782A437381009D33E3 /* myCourtTests.swift */; };
 		2C2EB1832A437381009D33E3 /* myCourtUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C2EB1822A437381009D33E3 /* myCourtUITests.swift */; };
 		2C2EB1852A437381009D33E3 /* myCourtUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C2EB1842A437381009D33E3 /* myCourtUITestsLaunchTests.swift */; };
+		2C2EB1942A44C625009D33E3 /* Content-ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C2EB1932A44C625009D33E3 /* Content-ViewModel.swift */; };
+		2C2EB1972A4A3B6C009D33E3 /* MapModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C2EB1962A4A3B6C009D33E3 /* MapModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +47,9 @@
 		2C2EB17E2A437381009D33E3 /* myCourtUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = myCourtUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C2EB1822A437381009D33E3 /* myCourtUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = myCourtUITests.swift; sourceTree = "<group>"; };
 		2C2EB1842A437381009D33E3 /* myCourtUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = myCourtUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		2C2EB1932A44C625009D33E3 /* Content-ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Content-ViewModel.swift"; sourceTree = "<group>"; };
+		2C2EB1952A4A3B17009D33E3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		2C2EB1962A4A3B6C009D33E3 /* MapModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,8 +100,11 @@
 		2C2EB1652A437380009D33E3 /* myCourt */ = {
 			isa = PBXGroup;
 			children = (
+				2C2EB1952A4A3B17009D33E3 /* Info.plist */,
 				2C2EB1662A437380009D33E3 /* myCourtApp.swift */,
 				2C2EB1682A437380009D33E3 /* ContentView.swift */,
+				2C2EB1932A44C625009D33E3 /* Content-ViewModel.swift */,
+				2C2EB1962A4A3B6C009D33E3 /* MapModel.swift */,
 				2C2EB16A2A437381009D33E3 /* Assets.xcassets */,
 				2C2EB16C2A437381009D33E3 /* myCourt.entitlements */,
 				2C2EB16D2A437381009D33E3 /* Preview Content */,
@@ -259,8 +267,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2C2EB1972A4A3B6C009D33E3 /* MapModel.swift in Sources */,
 				2C2EB1692A437380009D33E3 /* ContentView.swift in Sources */,
 				2C2EB1672A437380009D33E3 /* myCourtApp.swift in Sources */,
+				2C2EB1942A44C625009D33E3 /* Content-ViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -417,6 +427,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"myCourt/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = myCourt/Info.plist;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -427,7 +438,7 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.3;
@@ -453,6 +464,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"myCourt/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = myCourt/Info.plist;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -463,7 +475,7 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.3;
