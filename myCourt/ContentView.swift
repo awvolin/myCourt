@@ -111,7 +111,7 @@ struct LoggedInView: View {
     @State private var text = ""
     
     @State private var showingPopover = false
-
+    
     var body: some View {
         VStack(spacing: 20) {
             TextField("Enter an address", text: $text)
@@ -122,22 +122,27 @@ struct LoggedInView: View {
                 mapAPI.getLocation(address: text, delta: 0.5)
             }
             
-        
+            
             Button("Log out", action: {
                 logOutAction()
                 loggedIn = false
             })
             
             
-            Map(coordinateRegion: $mapAPI.region, annotationItems: mapAPI.locations) {
-                location in
-                MapMarker(coordinate: location.coordinate, tint: .blue)
+            //map location points
+            let permanentMarker = Location(name: "this", coordinate: CLLocationCoordinate2D(latitude: 39.714802, longitude: -75.116957))
+            var allLocations: [Location] {
+                return mapAPI.locations + [permanentMarker]
+            }
+            
+            Map(coordinateRegion: $mapAPI.region, annotationItems: allLocations) { location in
+                MapMarker(coordinate: location.coordinate, tint: .red)
             }
             .ignoresSafeArea()
             
             Button("Show Menu") {
-                        showingPopover = true
-                    }
+                showingPopover = true
+            }
             .popover(isPresented: $showingPopover) {
                 Text("Your content here")
                     .font(.headline)
@@ -153,4 +158,4 @@ struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
     }}
- 
+
