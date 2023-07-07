@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2C0B225F2A57A8D10091E92A /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C2EB1682A437380009D33E3 /* ContentView.swift */; };
 		2C2EB1672A437380009D33E3 /* myCourtApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C2EB1662A437380009D33E3 /* myCourtApp.swift */; };
-		2C2EB1692A437380009D33E3 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C2EB1682A437380009D33E3 /* ContentView.swift */; };
 		2C2EB16B2A437381009D33E3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2C2EB16A2A437381009D33E3 /* Assets.xcassets */; };
 		2C2EB16F2A437381009D33E3 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2C2EB16E2A437381009D33E3 /* Preview Assets.xcassets */; };
 		2C2EB1792A437381009D33E3 /* myCourtTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C2EB1782A437381009D33E3 /* myCourtTests.swift */; };
@@ -268,8 +268,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				2C2EB1972A4A3B6C009D33E3 /* MapModel.swift in Sources */,
-				2C2EB1692A437380009D33E3 /* ContentView.swift in Sources */,
 				2C2EB1672A437380009D33E3 /* myCourtApp.swift in Sources */,
+				2C0B225F2A57A8D10091E92A /* ContentView.swift in Sources */,
 				2C2EB1942A44C625009D33E3 /* Content-ViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
