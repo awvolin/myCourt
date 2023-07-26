@@ -14,7 +14,7 @@ struct ContentView: View {
     @State var vm = ViewModel()
     @State private var loggedIn = false
     
-    
+    @State private var selectedLocation: Location?
     
     var body: some View {
         NavigationStack {
@@ -115,6 +115,7 @@ struct LoggedInView: View {
     @State private var text = ""
     
     @State private var showingPopover = false
+    @State private var selectedLocation: Location?
     
     var body: some View {
         VStack(spacing: 20) {
@@ -126,12 +127,10 @@ struct LoggedInView: View {
                 mapAPI.getLocation(address: text, delta: 0.5)
             }
             
-            
             Button("Log out", action: {
                 logOutAction()
                 loggedIn = false
             })
-            
             
             //map location points
             let permanentMarker = Location(name: "this", coordinate: CLLocationCoordinate2D(latitude: 39.714802, longitude: -75.116957))
@@ -139,12 +138,10 @@ struct LoggedInView: View {
                 return mapAPI.locations + [permanentMarker]
             }
             
-            
-            
             Map(coordinateRegion: $mapAPI.region, annotationItems: allLocations) { location in
                 MapAnnotation(coordinate: location.coordinate) {
                     Button(action: {
-                        print("Location \(location.name) clicked")
+                        selectedLocation = location
                         showingPopover = true
                     }) {
                         Image(systemName: "basketball")
@@ -152,23 +149,29 @@ struct LoggedInView: View {
                             .frame(width: 30, height: 30)
                             .foregroundColor(.orange)
                     }
+                    .popover(isPresented: $showingPopover, content: {
+                        if let location = selectedLocation {
+                            PopoverContent(location: location)
+                        }
+                    })
                 }
             }
             .ignoresSafeArea()
-            
-            Button("Show Menu") {
-                showingPopover = true
-            }
-            .popover(isPresented: $showingPopover) {
-                Text("Your content here")
-                    .font(.headline)
-                    .padding()
-                
-            }
         }
     }
 }
 
+
+struct PopoverContent: View {
+    let location: Location
+
+    var body: some View {
+        VStack {
+            Text("Location: \(location.name)")
+            // add more content as needed
+        }
+    }
+}
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
