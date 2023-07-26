@@ -102,6 +102,10 @@ struct ContentView: View {
     }
 }
 
+//
+// Main view
+//
+
 struct LoggedInView: View {
     @Binding var loggedIn: Bool
     var username: String
@@ -135,8 +139,20 @@ struct LoggedInView: View {
                 return mapAPI.locations + [permanentMarker]
             }
             
+            
+            
             Map(coordinateRegion: $mapAPI.region, annotationItems: allLocations) { location in
-                MapMarker(coordinate: location.coordinate, tint: .red)
+                MapAnnotation(coordinate: location.coordinate) {
+                    Button(action: {
+                        print("Location \(location.name) clicked")
+                        showingPopover = true
+                    }) {
+                        Image(systemName: "basketball")
+                            .resizable()
+                            .frame(width: 30, height: 30)
+                            .foregroundColor(.orange)
+                    }
+                }
             }
             .ignoresSafeArea()
             
