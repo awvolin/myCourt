@@ -3,6 +3,7 @@
 //  myCourt
 //
 //  Created by Alex Volin on 6/21/23.
+//  Map Version deprecated on 7/27/23
 //
 
 import SwiftUI
