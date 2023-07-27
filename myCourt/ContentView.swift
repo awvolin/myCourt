@@ -112,60 +112,74 @@ struct LoggedInView: View {
     var username: String
     var logOutAction: () -> Void
     
-    @StateObject private var mapAPI = MapAPI()
     @State private var text = ""
     
-    @State private var showingPopover = false
-    @State private var selectedLocation: Location?
+    @Namespace var namespace
+    
     
     var body: some View {
         VStack(spacing: 20) {
-            TextField("Enter an address", text: $text)
+            TextField("Search", text: $text)
                 .textFieldStyle(.roundedBorder)
                 .padding(.horizontal)
             
-            Button("Find address") {
-                mapAPI.getLocation(address: text, delta: 0.5)
+            ScrollView {
+                VStack {
+                    Text("Rowan Rec Center")
+                        .font(.largeTitle.weight(.bold))
+                        .matchedGeometryEffect(id: "title1", in: namespace)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(20)
+                        .foregroundStyle(.white)
+                        .background(
+                            Color.orange.matchedGeometryEffect(id: "background1", in: namespace))
+                        .padding()
+                }
+                VStack {
+                    Text("Rowan Cages")
+                        .font(.largeTitle.weight(.bold))
+                        .matchedGeometryEffect(id: "title2", in: namespace)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(20)
+                        .foregroundStyle(.white)
+                        .background(
+                            Color.orange.matchedGeometryEffect(id: "background2", in: namespace))
+                        .padding()
+                        .onTapGesture {
+                            print("ehllo")
+                        }
+                }
+                VStack {
+                    Text("Williamsburg Court")
+                        .font(.largeTitle.weight(.bold))
+                    
+                        .matchedGeometryEffect(id: "title3", in: namespace)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(20)
+                        .foregroundStyle(.white)
+                        .background(
+                            Color.orange.matchedGeometryEffect(id: "background3", in: namespace))
+                        .padding()
+                }
             }
+            Spacer()
             
             Button("Log out", action: {
                 logOutAction()
                 loggedIn = false
             })
-            
-            //map location points
-            let permanentMarker = Location(name: "this", coordinate: CLLocationCoordinate2D(latitude: 39.714802, longitude: -75.116957))
-            var allLocations: [Location] {
-                return mapAPI.locations + [permanentMarker]
-            }
-            
-            Map(coordinateRegion: $mapAPI.region, annotationItems: allLocations) { location in
-                MapAnnotation(coordinate: location.coordinate) {
-                    Button(action: {
-                        selectedLocation = location
-                        showingPopover = true
-                    }) {
-                        Image(systemName: "basketball")
-                            .resizable()
-                            .frame(width: 30, height: 30)
-                            .foregroundColor(.orange)
-                    }
-                    .popover(isPresented: $showingPopover, content: {
-                        if let location = selectedLocation {
-                            PopoverContent(location: location)
-                        }
-                    })
-                }
-            }
-            .ignoresSafeArea()
         }
+        
+        
+        
+        
     }
 }
 
 
 struct PopoverContent: View {
     let location: Location
-
+    
     var body: some View {
         VStack {
             Text("Location: \(location.name)")
@@ -179,3 +193,21 @@ struct ContentView_Previews: PreviewProvider {
         ContentView()
     }}
 
+
+
+
+
+
+//map location points
+//            let permanentMarker = Location(name: "this", coordinate: CLLocationCoordinate2D(latitude: 39.714802, longitude: -75.116957))
+//            var allLocations: [Location] {
+//                return mapAPI.locations + [permanentMarker]
+//            }
+
+
+
+//                Image("cardBackground")
+//                    .resizable()
+//                    .aspectRatio(contentMode: .fit)
+//                    .padding()
+//                    .mask(RoundedRectangle(cornerRadius: 70, style: .continuous))
