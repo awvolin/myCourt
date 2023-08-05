@@ -184,6 +184,10 @@ struct LoggedInView: View {
                    }
                }
            }
+           .onAppear {
+               courtViewModel.fetchCourts()
+           }
+
        }
    }
 
