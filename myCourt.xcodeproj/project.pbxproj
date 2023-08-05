@@ -14,7 +14,7 @@
 		2C2EB1792A437381009D33E3 /* myCourtTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C2EB1782A437381009D33E3 /* myCourtTests.swift */; };
 		2C2EB1832A437381009D33E3 /* myCourtUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C2EB1822A437381009D33E3 /* myCourtUITests.swift */; };
 		2C2EB1852A437381009D33E3 /* myCourtUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C2EB1842A437381009D33E3 /* myCourtUITestsLaunchTests.swift */; };
-		2C2EB1942A44C625009D33E3 /* Content-ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C2EB1932A44C625009D33E3 /* Content-ViewModel.swift */; };
+		2C2EB1942A44C625009D33E3 /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C2EB1932A44C625009D33E3 /* LoginViewModel.swift */; };
 		2C2EB1972A4A3B6C009D33E3 /* MapModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C2EB1962A4A3B6C009D33E3 /* MapModel.swift */; };
 /* End PBXBuildFile section */
 
@@ -47,9 +47,10 @@
 		2C2EB17E2A437381009D33E3 /* myCourtUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = myCourtUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C2EB1822A437381009D33E3 /* myCourtUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = myCourtUITests.swift; sourceTree = "<group>"; };
 		2C2EB1842A437381009D33E3 /* myCourtUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = myCourtUITestsLaunchTests.swift; sourceTree = "<group>"; };
-		2C2EB1932A44C625009D33E3 /* Content-ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Content-ViewModel.swift"; sourceTree = "<group>"; };
+		2C2EB1932A44C625009D33E3 /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		2C2EB1952A4A3B17009D33E3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		2C2EB1962A4A3B6C009D33E3 /* MapModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapModel.swift; sourceTree = "<group>"; };
+		2C41FB562A7EBC1A00024414 /* myCourtRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = myCourtRelease.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,10 +101,11 @@
 		2C2EB1652A437380009D33E3 /* myCourt */ = {
 			isa = PBXGroup;
 			children = (
+				2C41FB562A7EBC1A00024414 /* myCourtRelease.entitlements */,
 				2C2EB1952A4A3B17009D33E3 /* Info.plist */,
 				2C2EB1662A437380009D33E3 /* myCourtApp.swift */,
 				2C2EB1682A437380009D33E3 /* ContentView.swift */,
-				2C2EB1932A44C625009D33E3 /* Content-ViewModel.swift */,
+				2C2EB1932A44C625009D33E3 /* LoginViewModel.swift */,
 				2C2EB1962A4A3B6C009D33E3 /* MapModel.swift */,
 				2C2EB16A2A437381009D33E3 /* Assets.xcassets */,
 				2C2EB16C2A437381009D33E3 /* myCourt.entitlements */,
@@ -270,7 +272,7 @@
 				2C2EB1972A4A3B6C009D33E3 /* MapModel.swift in Sources */,
 				2C2EB1672A437380009D33E3 /* myCourtApp.swift in Sources */,
 				2C0B225F2A57A8D10091E92A /* ContentView.swift in Sources */,
-				2C2EB1942A44C625009D33E3 /* Content-ViewModel.swift in Sources */,
+				2C2EB1942A44C625009D33E3 /* LoginViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -422,9 +424,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = myCourt/myCourt.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"myCourt/Preview Content\"";
+				DEVELOPMENT_TEAM = TP2H36J7B3;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = myCourt/Info.plist;
@@ -446,7 +450,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = volin.dev.myCourt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -458,10 +464,12 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = myCourt/myCourt.entitlements;
+				CODE_SIGN_ENTITLEMENTS = myCourt/myCourtRelease.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"myCourt/Preview Content\"";
+				DEVELOPMENT_TEAM = TP2H36J7B3;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = myCourt/Info.plist;
@@ -483,7 +491,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = volin.dev.myCourt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

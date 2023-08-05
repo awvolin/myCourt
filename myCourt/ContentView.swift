@@ -12,7 +12,7 @@ import CoreLocation
 
 struct ContentView: View {
     @State private var showingLoginView = false
-    @State var vm = ViewModel()
+    @State var vm = LoginViewModel()
     @State private var loggedIn = false
     
     @State private var selectedLocation: Location?
@@ -113,66 +113,102 @@ struct LoggedInView: View {
     var logOutAction: () -> Void
     
     @State private var text = ""
+    @State private var show = false
+    
     
     @Namespace var namespace
     
     
+    
     var body: some View {
-        VStack(spacing: 20) {
-            TextField("Search", text: $text)
-                .textFieldStyle(.roundedBorder)
-                .padding(.horizontal)
+        if !show {
             
-            ScrollView {
-                VStack {
-                    Text("Rowan Rec Center")
-                        .font(.largeTitle.weight(.bold))
-                        .matchedGeometryEffect(id: "title1", in: namespace)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(20)
-                        .foregroundStyle(.white)
-                        .background(
-                            Color.orange.matchedGeometryEffect(id: "background1", in: namespace))
-                        .padding()
-                }
-                VStack {
-                    Text("Rowan Cages")
-                        .font(.largeTitle.weight(.bold))
-                        .matchedGeometryEffect(id: "title2", in: namespace)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(20)
-                        .foregroundStyle(.white)
-                        .background(
-                            Color.orange.matchedGeometryEffect(id: "background2", in: namespace))
-                        .padding()
-                        .onTapGesture {
-                            print("ehllo")
+                GeometryReader{ geo in
+                    ZStack (alignment: .top) {
+                        Color(hue: 0, saturation: 0, brightness: 0.77)
+                            .aspectRatio(geo.size, contentMode: .fill)
+                            .edgesIgnoringSafeArea(.all)
+                    VStack(spacing: 20) {
+                        
+                        TextField("Search", text: $text)
+                            .textFieldStyle(.roundedBorder)
+                            .padding(.horizontal)
+                        
+                        ScrollView {
+                            VStack {
+                                Text("Rowan Rec Center")
+                                    .font(.largeTitle.weight(.bold))
+                                    .matchedGeometryEffect(id: "title1", in: namespace)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .padding(20)
+                                    .foregroundStyle(.white)
+                                    .background(
+                                        Color.orange.matchedGeometryEffect(id: "background1", in: namespace))
+                                
+                                    .padding()
+                            }
+                            
+                            .onTapGesture {
+                                withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                                    show.toggle()
+                                }
+                            }
+                            VStack {
+                                Text("Rowan Cages")
+                                    .font(.largeTitle.weight(.bold))
+                                    .matchedGeometryEffect(id: "title2", in: namespace)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .padding(20)
+                                    .foregroundStyle(.white)
+                                    .background(
+                                        Color.orange.matchedGeometryEffect(id: "background2", in: namespace))
+                                    .padding()
+                                    .onTapGesture {
+                                        print("ehllo")
+                                    }
+                            }
+                            VStack {
+                                Text("Williamsburg Court")
+                                    .font(.largeTitle.weight(.bold))
+                                
+                                    .matchedGeometryEffect(id: "title3", in: namespace)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .padding(20)
+                                    .foregroundStyle(.white)
+                                    .background(
+                                        Color.orange.matchedGeometryEffect(id: "background3", in: namespace))
+                                    .padding()
+                            }
                         }
-                }
-                VStack {
-                    Text("Williamsburg Court")
-                        .font(.largeTitle.weight(.bold))
+                        Spacer()
+                        
+                        Button("Log out", action: {
+                            logOutAction()
+                            loggedIn = false
+                        })
+                    }
                     
-                        .matchedGeometryEffect(id: "title3", in: namespace)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(20)
-                        .foregroundStyle(.white)
-                        .background(
-                            Color.orange.matchedGeometryEffect(id: "background3", in: namespace))
-                        .padding()
+                    
                 }
             }
-            Spacer()
-            
-            Button("Log out", action: {
-                logOutAction()
-                loggedIn = false
-            })
         }
-        
-        
-        
-        
+        else {
+            VStack {
+                Text("Rowan Rec Center")
+                    .font(.largeTitle.weight(.bold))
+                    .matchedGeometryEffect(id: "title1", in: namespace)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(20)
+                    .foregroundStyle(.white)
+                    .background(
+                        Color.orange.matchedGeometryEffect(id: "background1", in: namespace))
+                    .padding()
+            }
+            .onTapGesture {withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                show.toggle()
+            }
+            }
+        }
     }
 }
 
