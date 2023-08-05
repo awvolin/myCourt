@@ -15,7 +15,7 @@
 		2C2EB1832A437381009D33E3 /* myCourtUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C2EB1822A437381009D33E3 /* myCourtUITests.swift */; };
 		2C2EB1852A437381009D33E3 /* myCourtUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C2EB1842A437381009D33E3 /* myCourtUITestsLaunchTests.swift */; };
 		2C2EB1942A44C625009D33E3 /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C2EB1932A44C625009D33E3 /* LoginViewModel.swift */; };
-		2C2EB1972A4A3B6C009D33E3 /* MapModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C2EB1962A4A3B6C009D33E3 /* MapModel.swift */; };
+		2C41FB582A7EC27300024414 /* CourtViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C41FB572A7EC27300024414 /* CourtViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,8 +49,8 @@
 		2C2EB1842A437381009D33E3 /* myCourtUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = myCourtUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		2C2EB1932A44C625009D33E3 /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		2C2EB1952A4A3B17009D33E3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		2C2EB1962A4A3B6C009D33E3 /* MapModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapModel.swift; sourceTree = "<group>"; };
 		2C41FB562A7EBC1A00024414 /* myCourtRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = myCourtRelease.entitlements; sourceTree = "<group>"; };
+		2C41FB572A7EC27300024414 /* CourtViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourtViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,7 +106,7 @@
 				2C2EB1662A437380009D33E3 /* myCourtApp.swift */,
 				2C2EB1682A437380009D33E3 /* ContentView.swift */,
 				2C2EB1932A44C625009D33E3 /* LoginViewModel.swift */,
-				2C2EB1962A4A3B6C009D33E3 /* MapModel.swift */,
+				2C41FB572A7EC27300024414 /* CourtViewModel.swift */,
 				2C2EB16A2A437381009D33E3 /* Assets.xcassets */,
 				2C2EB16C2A437381009D33E3 /* myCourt.entitlements */,
 				2C2EB16D2A437381009D33E3 /* Preview Content */,
@@ -269,9 +269,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2C2EB1972A4A3B6C009D33E3 /* MapModel.swift in Sources */,
 				2C2EB1672A437380009D33E3 /* myCourtApp.swift in Sources */,
 				2C0B225F2A57A8D10091E92A /* ContentView.swift in Sources */,
+				2C41FB582A7EC27300024414 /* CourtViewModel.swift in Sources */,
 				2C2EB1942A44C625009D33E3 /* LoginViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

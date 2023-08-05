@@ -44,7 +44,6 @@ class LoginViewModel: ObservableObject {
             return
         }
         
-        
         print("Before authentication toggle: \(authenticated)")  // Debug line
         toggleAuthentication()
         print("After authentication toggle: \(authenticated)")
@@ -57,8 +56,4 @@ class LoginViewModel: ObservableObject {
     func logPressed() {
         print("Button pressed")
     }
-    
-    
-    
-    
 }
