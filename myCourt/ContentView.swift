@@ -15,7 +15,6 @@ struct ContentView: View {
     @State var vm = LoginViewModel()
     @State private var loggedIn = false
     
-    @State private var selectedLocation: Location?
     
     var body: some View {
         NavigationStack {
@@ -116,113 +115,78 @@ struct LoggedInView: View {
     @State private var show = false
     
     
-    @Namespace var namespace
-    
-    
-    
-    var body: some View {
-        if !show {
-            
-                GeometryReader{ geo in
-                    ZStack (alignment: .top) {
-                        Color(hue: 0, saturation: 0, brightness: 0.77)
-                            .aspectRatio(geo.size, contentMode: .fill)
-                            .edgesIgnoringSafeArea(.all)
-                    VStack(spacing: 20) {
-                        
-                        TextField("Search", text: $text)
-                            .textFieldStyle(.roundedBorder)
-                            .padding(.horizontal)
-                        
-                        ScrollView {
-                            VStack {
-                                Text("Rowan Rec Center")
-                                    .font(.largeTitle.weight(.bold))
-                                    .matchedGeometryEffect(id: "title1", in: namespace)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                    .padding(20)
-                                    .foregroundStyle(.white)
-                                    .background(
-                                        Color.orange.matchedGeometryEffect(id: "background1", in: namespace))
-                                
-                                    .padding()
-                            }
-                            
-                            .onTapGesture {
-                                withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
-                                    show.toggle()
-                                }
-                            }
-                            VStack {
-                                Text("Rowan Cages")
-                                    .font(.largeTitle.weight(.bold))
-                                    .matchedGeometryEffect(id: "title2", in: namespace)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                    .padding(20)
-                                    .foregroundStyle(.white)
-                                    .background(
-                                        Color.orange.matchedGeometryEffect(id: "background2", in: namespace))
-                                    .padding()
-                                    .onTapGesture {
-                                        print("ehllo")
-                                    }
-                            }
-                            VStack {
-                                Text("Williamsburg Court")
-                                    .font(.largeTitle.weight(.bold))
-                                
-                                    .matchedGeometryEffect(id: "title3", in: namespace)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                    .padding(20)
-                                    .foregroundStyle(.white)
-                                    .background(
-                                        Color.orange.matchedGeometryEffect(id: "background3", in: namespace))
-                                    .padding()
-                            }
-                        }
-                        Spacer()
-                        
-                        Button("Log out", action: {
-                            logOutAction()
-                            loggedIn = false
-                        })
-                    }
-                    
-                    
-                }
-            }
-        }
-        else {
-            VStack {
-                Text("Rowan Rec Center")
-                    .font(.largeTitle.weight(.bold))
-                    .matchedGeometryEffect(id: "title1", in: namespace)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(20)
-                    .foregroundStyle(.white)
-                    .background(
-                        Color.orange.matchedGeometryEffect(id: "background1", in: namespace))
-                    .padding()
-            }
-            .onTapGesture {withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
-                show.toggle()
-            }
-            }
-        }
-    }
-}
+    @StateObject var courtViewModel = CourtViewModel()
+       @Namespace var namespace
+       @State private var selectedCourt: Court?  // New State property to hold the selected court
 
+       var body: some View {
+           ZStack {
+               // Main view when not showing court details
+               if selectedCourt == nil {
+                   GeometryReader { geo in
+                       Color(hue: 0, saturation: 0, brightness: 0.77)
+                           .aspectRatio(geo.size, contentMode: .fill)
+                           .edgesIgnoringSafeArea(.all)
 
-struct PopoverContent: View {
-    let location: Location
-    
-    var body: some View {
-        VStack {
-            Text("Location: \(location.name)")
-            // add more content as needed
-        }
-    }
-}
+                       VStack(spacing: 20) {
+                           TextField("Search", text: $text)
+                               .textFieldStyle(.roundedBorder)
+                               .padding(.horizontal)
+
+                           ScrollView {
+                               ForEach(courtViewModel.courts) { court in
+                                   VStack {
+                                       Text(court.name)
+                                           .font(.largeTitle.weight(.bold))
+                                           .matchedGeometryEffect(id: "title\(court.id)", in: namespace)
+                                           .frame(maxWidth: .infinity, alignment: .leading)
+                                           .padding(20)
+                                           .foregroundStyle(.white)
+                                           .background(
+                                               Color.orange
+                                                   .matchedGeometryEffect(id: "background\(court.id)", in: namespace)
+                                           )
+                                           .padding()
+                                           .onTapGesture {
+                                               withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                                                   selectedCourt = court
+                                               }
+                                           }
+                                   }
+                               }
+                           }
+                           Spacer()
+
+                           Button("Log out", action: {
+                               logOutAction()
+                               loggedIn = false
+                           })
+                       }
+                   }
+               } else {
+                   // Detail view for a selected court
+                   VStack {
+                       Text(selectedCourt!.name)
+                           .font(.largeTitle.weight(.bold))
+                           .matchedGeometryEffect(id: "title\(selectedCourt!.id)", in: namespace)
+                           .frame(maxWidth: .infinity, alignment: .leading)
+                           .padding(20)
+                           .foregroundStyle(.white)
+                           .background(
+                               Color.orange.matchedGeometryEffect(id: "background\(selectedCourt!.id)", in: namespace)
+                           )
+                           .padding()
+                   }
+                   .onTapGesture {
+                       withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                           selectedCourt = nil
+                       }
+                   }
+               }
+           }
+       }
+   }
+
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
