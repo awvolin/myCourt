@@ -10,6 +10,7 @@ class CourtViewModel: ObservableObject {
         return container.publicCloudDatabase
     }
 
+    
     func fetchCourts() {
         isLoading = true
 
@@ -58,6 +59,7 @@ class CourtViewModel: ObservableObject {
 }
 
 
+
 //  HARDCODE
 
 //
@@ -80,3 +82,4 @@ class CourtViewModel: ObservableObject {
 //        ]
 //    }
 //}
+
