@@ -119,6 +119,8 @@ struct LoggedInView: View {
     
     var body: some View {
        
+        //Cards shown up to "else"
+        
         if selectedCourt == nil {
             VStack(spacing: 20) {
                 TextField("Enter Court", text: $courtName)
@@ -186,44 +188,55 @@ struct LoggedInView: View {
                                 }
                             }
                         }
+            
+            //  Showing information on one court
+            
         } else {
             VStack {
                 image(from: selectedCourt?.image)
                     .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(height: 300)
-                    .clipped()
+                    .scaledToFit() // Adjust to fit the width and retain original aspect ratio
+                    .frame(maxWidth: .infinity) // Ensure it stretches across the width of the device
                     .matchedGeometryEffect(id: "image\(String(describing: selectedCourt!.id))", in: namespace)
-                
+
                 VStack(alignment: .leading) {
                     Text(selectedCourt!.name)
                         .font(.largeTitle.weight(.bold))
+                        .frame(maxWidth: .infinity, alignment: .leading)
                         .matchedGeometryEffect(id: "title\(String(describing: selectedCourt!.id))", in: namespace)
                     
                     if let selectedCourtDescription = selectedCourt?.description {
                         Text(selectedCourtDescription)
                             .font(.footnote)
                             .foregroundColor(.gray)
+                            .padding(1)
                             .matchedGeometryEffect(id: "subtitle\(String(describing: selectedCourt!.id))", in: namespace)
                     }
+                    Text("Previous Games")
+                        .font(.largeTitle.bold())
                 }
                 .padding()
+                
+                Spacer() 
             }
             .background(Color.white
                 .matchedGeometryEffect(id: "background\(String(describing: selectedCourt!.id))", in: namespace)
             )
             .cornerRadius(15)
             .shadow(color: Color.black.opacity(0.15), radius: 10, x: 0, y: 10)
-            .padding(50)
+            .padding(10)
             .onTapGesture {
                 withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
                     selectedCourt = nil
                 }
             }
+
         }
     }
     
 }
+
+//  Helper for image asset conversion
 
 func image(from asset: CKAsset?) -> Image {
     guard let asset = asset, let data = try? Data(contentsOf: asset.fileURL!), let uiImage = UIImage(data: data) else {
@@ -232,8 +245,7 @@ func image(from asset: CKAsset?) -> Image {
     return Image(uiImage: uiImage)
 }
 
-
-
+// Preview Logic
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
