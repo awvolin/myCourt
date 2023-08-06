@@ -5,7 +5,10 @@ class CourtViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var error: Error?
 
-    private var publicDatabase = CKContainer.default().publicCloudDatabase
+    private var container = CKContainer(identifier: "iCloud.com.volin.dev.myCourt")
+    private var publicDatabase: CKDatabase {
+        return container.publicCloudDatabase
+    }
 
     func fetchCourts() {
         isLoading = true
@@ -17,6 +20,21 @@ class CourtViewModel: ObservableObject {
             DispatchQueue.main.async {
                 switch result {
                 case .success(let data):
+                    // Debug print statement for records received
+                    if data.matchResults.isEmpty {
+                        print("No records received.")
+                    } else {
+                        print("Received \(data.matchResults.count) records.")
+                        for (id, recordResult) in data.matchResults {
+                            switch recordResult {
+                            case .success(let record):
+                                print("Record ID: \(id), Name: \(String(describing: record["name"])), Description: \(String(describing: record["description"])), NumGames: \(String(describing: record["numGames"]))")
+                            case .failure(let error):
+                                print("Error fetching record with ID \(id): \(error)")
+                            }
+                        }
+                    }
+
                     self?.courts = data.matchResults.compactMap { (_, recordResult) -> Court? in
                         switch recordResult {
                         case .success(let record):
@@ -29,6 +47,8 @@ class CourtViewModel: ObservableObject {
                         }
                     }
                 case .failure(let error):
+                    // Debug print statement for errors
+                    print("Error fetching courts: \(error)")
                     self?.error = error
                 }
                 self?.isLoading = false
@@ -46,7 +66,7 @@ class CourtViewModel: ObservableObject {
 //class CourtViewModel: ObservableObject {
 //    @Published var courts: [Court] = []
 //
-////private var publicDatabase = CKContainer.default().publicCloudDatabase
+//  private var publicDatabase = CKContainer.default().publicCloudDatabase
 //  let container = CKContainer(identifier: "iCloud.com.volin.dev.myCourt")
 //    init() {
 //        // Manually generating sample courts

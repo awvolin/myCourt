@@ -11,6 +11,6 @@ struct Court: Identifiable {
     var name: String
     var description: String
     var numGames: Int64
-    // You can add more properties as needed, like location, capacity, etc.
-}
     
+}
+

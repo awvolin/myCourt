@@ -184,9 +184,9 @@ struct LoggedInView: View {
                    }
                }
            }
-//           .onAppear {
-//               courtViewModel.fetchCourts()
-//           }
+           .onAppear {
+               courtViewModel.fetchCourts()
+           }
 
        }
    }
