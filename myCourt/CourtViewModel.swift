@@ -36,3 +36,27 @@ class CourtViewModel: ObservableObject {
         }
     }
 }
+
+
+//  HARDCODE
+
+//
+//import CloudKit
+//
+//class CourtViewModel: ObservableObject {
+//    @Published var courts: [Court] = []
+//
+////private var publicDatabase = CKContainer.default().publicCloudDatabase
+//  let container = CKContainer(identifier: "iCloud.com.volin.dev.myCourt")
+//    init() {
+//        // Manually generating sample courts
+//        courts = [
+//            Court(name: "Rowan Rec Center", description: "Main rec center court at Rowan", numGames: 5),
+//            Court(name: "Rowan Cages", description: "Cage courts near the dorms", numGames: 2),
+//            Court(name: "Williamsburg Court", description: "Open court in Williamsburg", numGames: 3),
+//            Court(name: "City Square Court", description: "Downtown city square court", numGames: 4),
+//            Court(name: "Riverside Court", description: "Quiet court by the riverside", numGames: 1),
+//            Court(name: "Green Park Court", description: "Court in the middle of Green Park", numGames: 3)
+//        ]
+//    }
+//}

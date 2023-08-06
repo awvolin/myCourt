@@ -184,9 +184,9 @@ struct LoggedInView: View {
                    }
                }
            }
-           .onAppear {
-               courtViewModel.fetchCourts()
-           }
+//           .onAppear {
+//               courtViewModel.fetchCourts()
+//           }
 
        }
    }
@@ -196,22 +196,3 @@ struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
     }}
-
-
-
-
-
-
-//map location points
-//            let permanentMarker = Location(name: "this", coordinate: CLLocationCoordinate2D(latitude: 39.714802, longitude: -75.116957))
-//            var allLocations: [Location] {
-//                return mapAPI.locations + [permanentMarker]
-//            }
-
-
-
-//                Image("cardBackground")
-//                    .resizable()
-//                    .aspectRatio(contentMode: .fit)
-//                    .padding()
-//                    .mask(RoundedRectangle(cornerRadius: 70, style: .continuous))
