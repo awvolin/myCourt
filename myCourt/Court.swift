@@ -6,11 +6,38 @@
 //
 
 import Foundation
-struct Court: Identifiable {
-    var id: String = UUID().uuidString
+import CloudKit
+
+enum CourtRecordKeys: String {
+    case type = "NewCourt"
+    case name
+}
+
+struct Court {
+    var id: CKRecord.ID?
     var name: String
-    var description: String
-    var numGames: Int64
     
 }
 
+extension Court {
+    init?(record: CKRecord) {
+        guard let name = record[CourtRecordKeys.name.rawValue] as? String
+                
+                
+        else {
+            return nil
+        }
+        self.init(id: record.recordID, name: name)
+    }
+}
+
+
+
+extension Court {
+    var record: CKRecord {
+        let record = CKRecord(recordType: CourtRecordKeys.type.rawValue)
+        record[CourtRecordKeys.type.rawValue] = name
+        return record
+        
+    }
+}
