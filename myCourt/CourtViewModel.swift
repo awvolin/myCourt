@@ -16,6 +16,8 @@ class CourtViewModel: ObservableObject {
         record["name"] = court.name
         // Set other fields as necessary
         let _ = try await db.save(record)
+        
+        try await getCourts()
     }
     
     func getCourts() async throws  {
@@ -24,8 +26,10 @@ class CourtViewModel: ObservableObject {
         let result = try await db.records(matching: query)
         let records = result.matchResults.compactMap { try? $0.1.get() }
         
-        records.forEach { record in
-            courtDictionary[record.recordID] = Court(record: record)
+        DispatchQueue.main.async {
+            records.forEach { record in
+                self.courtDictionary[record.recordID] = Court(record: record)
+            }
         }
     }
     

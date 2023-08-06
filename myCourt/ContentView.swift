@@ -113,122 +113,93 @@ struct LoggedInView: View {
 
     @State private var courtName: String = ""
     @StateObject private var model = CourtViewModel()
+    @Namespace var namespace
+    @State private var selectedCourt: Court?
 
     var body: some View {
-        VStack {
-            TextField("Enter Court", text: $courtName)
-                .textFieldStyle(.roundedBorder)
-                .onSubmit {
-                    Task {
-                        do {
-                            let court = Court(name: courtName)
-                            try await model.addCourt(court: court)
-                        } catch {
-                            // Handle error
-                            print("Failed to add court: \(error)")
+        ZStack {
+            // Main view when not showing court details
+            if selectedCourt == nil {
+                GeometryReader { geo in
+                    Color(hue: 0, saturation: 0, brightness: 0.77)
+                        .aspectRatio(geo.size, contentMode: .fill)
+                        .edgesIgnoringSafeArea(.all)
+
+                    VStack(spacing: 20) {
+                        TextField("Enter Court", text: $courtName)
+                            .textFieldStyle(.roundedBorder)
+                            .onSubmit {
+                                Task {
+                                    do {
+                                        let court = Court(name: courtName)
+                                        try await model.addCourt(court: court)
+                                    } catch {
+                                        print("Failed to add court: \(error)")
+                                    }
+                                }
+                            }
+
+                        ScrollView {
+                            ForEach(model.courts, id: \.id) { court in
+                                Text(court.name)
+                                    .font(.largeTitle.weight(.bold))
+                                    .matchedGeometryEffect(id: "title\(court.id)", in: namespace)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .padding(20)
+                                    .foregroundStyle(.white)
+                                    .background(
+                                        Color.orange
+                                            .matchedGeometryEffect(id: "background\(court.id)", in: namespace)
+                                    )
+                                    .padding()
+                                    .onTapGesture {
+                                        withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                                            selectedCourt = court
+                                        }
+                                    }
+                            }
                         }
+
+                        Button("Log out", action: {
+                            logOutAction()
+                            loggedIn = false
+                        })
+                    }
+                    .padding()
+                }
+            } else {
+                // Detail view for a selected court
+                VStack {
+                    Text(selectedCourt!.name)
+                        .font(.largeTitle.weight(.bold))
+                        .matchedGeometryEffect(id: "title\(selectedCourt!.id)", in: namespace)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(20)
+                        .foregroundStyle(.white)
+                        .background(
+                            Color.orange.matchedGeometryEffect(id: "background\(selectedCourt!.id)", in: namespace)
+                        )
+                        .padding()
+                }
+                .onTapGesture {
+                    withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                        selectedCourt = nil
                     }
                 }
-            
-            List(model.courts, id: \.id) { court in
-                Text(court.name)
             }
-            
-            Spacer()
         }
-        .padding()
-        .task {
-            do {
-                try await model.getCourts()
-            }
-            catch {
-                print("Error fetching courts: \(error)")
+        .onAppear {
+            Task {
+                do {
+                    try await model.getCourts()
+                }
+                catch {
+                    print("Error fetching courts: \(error)")
+                }
             }
         }
     }
 }
-
-    
-    
-    
-    
-
-//
-//    @StateObject var courtViewModel = CourtViewModel()
-//       @Namespace var namespace
-//       @State private var selectedCourt: Court?  // New State property to hold the selected court
-//
-//       var body: some View {
-//           ZStack {
-//               // Main view when not showing court details
-//               if selectedCourt == nil {
-//                   GeometryReader { geo in
-//                       Color(hue: 0, saturation: 0, brightness: 0.77)
-//                           .aspectRatio(geo.size, contentMode: .fill)
-//                           .edgesIgnoringSafeArea(.all)
-//
-//                       VStack(spacing: 20) {
-//                           TextField("Search", text: $text)
-//                               .textFieldStyle(.roundedBorder)
-//                               .padding(.horizontal)
-//
-//                           ScrollView {
-//                               ForEach(courtViewModel.courts) { court in
-//                                   VStack {
-//                                       Text(court.name)
-//                                           .font(.largeTitle.weight(.bold))
-//                                           .matchedGeometryEffect(id: "title\(court.id)", in: namespace)
-//                                           .frame(maxWidth: .infinity, alignment: .leading)
-//                                           .padding(20)
-//                                           .foregroundStyle(.white)
-//                                           .background(
-//                                               Color.orange
-//                                                   .matchedGeometryEffect(id: "background\(court.id)", in: namespace)
-//                                           )
-//                                           .padding()
-//                                           .onTapGesture {
-//                                               withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
-//                                                   selectedCourt = court
-//                                               }
-//                                           }
-//                                   }
-//                               }
-//                           }
-//                           Spacer()
-//
-//                           Button("Log out", action: {
-//                               logOutAction()
-//                               loggedIn = false
-//                           })
-//                       }
-//                   }
-//               } else {
-//                   // Detail view for a selected court
-//                   VStack {
-//                       Text(selectedCourt!.name)
-//                           .font(.largeTitle.weight(.bold))
-//                           .matchedGeometryEffect(id: "title\(selectedCourt!.id)", in: namespace)
-//                           .frame(maxWidth: .infinity, alignment: .leading)
-//                           .padding(20)
-//                           .foregroundStyle(.white)
-//                           .background(
-//                               Color.orange.matchedGeometryEffect(id: "background\(selectedCourt!.id)", in: namespace)
-//                           )
-//                           .padding()
-//                   }
-//                   .onTapGesture {
-//                       withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
-//                           selectedCourt = nil
-//                       }
-//                   }
-//               }
-//           }
-//           .onAppear {
-//               courtViewModel.fetchCourts()
-//           }
-//
-//       }
-// }
 
 
 struct ContentView_Previews: PreviewProvider {
