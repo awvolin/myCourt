@@ -26,6 +26,23 @@ class GameViewModel: ObservableObject {
             records.forEach { record in
                 self.gameDictionary[record.recordID] = Game(record: record)
             }
+            print("getGames(): Fetched \(self.gameDictionary.count) games") // Debug print
+        }
+    }
+
+    func getGames(for courtID: CKRecord.ID) async throws {
+        let predicate = NSPredicate(format: "%K == %@", GameRecordKeys.CourtRef.rawValue, CKRecord.Reference(recordID: courtID, action: .deleteSelf))
+        let query = CKQuery(recordType: GameRecordKeys.type.rawValue, predicate: predicate)
+        query.sortDescriptors = [NSSortDescriptor(key: GameRecordKeys.Date.rawValue, ascending: true)]
+        let result = try await db.records(matching: query)
+        let records = result.matchResults.compactMap { try? $0.1.get() }
+
+        DispatchQueue.main.async {
+            self.gameDictionary = [:]  // Clear previous games
+            records.forEach { record in
+                self.gameDictionary[record.recordID] = Game(record: record)
+            }
+            print("getGames(for:): Fetched \(self.gameDictionary.count) games for court ID \(courtID.recordName)") // Debug print
         }
     }
 }

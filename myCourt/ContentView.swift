@@ -114,6 +114,7 @@ struct LoggedInView: View {
     
     @State private var courtName: String = ""
     @StateObject private var model = CourtViewModel()
+    @StateObject private var gameViewModel = GameViewModel()    
     @Namespace var namespace
     @State private var selectedCourt: Court?
     
@@ -169,6 +170,13 @@ struct LoggedInView: View {
                         .onTapGesture {
                             withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
                                 selectedCourt = court
+                                Task {
+                                    do {
+                                        try await gameViewModel.getGames()
+                                    } catch {
+                                        print("Error fetching games for court \(court.id!): \(error)")
+                                    }
+                                }
                             }
                         }
                     }
@@ -183,6 +191,7 @@ struct LoggedInView: View {
                             Task {
                                 do {
                                     try await model.getCourts()
+                                    try await gameViewModel.getGames()
                                 } catch {
                                     print("Error fetching courts: \(error)")
                                 }
@@ -214,6 +223,11 @@ struct LoggedInView: View {
                     }
                     Text("Previous Games")
                         .font(.largeTitle.bold())
+                    List(gameViewModel.games) { game in
+                        if let teamOne = game.teamOne {
+                            Text(teamOne)
+                        }
+                    }
                 }
                 .padding()
                 

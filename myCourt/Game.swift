@@ -10,9 +10,10 @@ enum GameRecordKeys: String {
     case ScoreOne
     case ScoreTwo
     case Date
+    case CourtRef
 }
 
-struct Game {
+struct Game: Identifiable {
     var id: CKRecord.ID?
     var name: String
     var teamOne: String?
@@ -20,6 +21,7 @@ struct Game {
     var scoreOne: Int64?
     var scoreTwo: Int64?
     var date: Date?
+    var courtRef: CKRecord.Reference?
 }
 
 extension Game {
@@ -33,8 +35,10 @@ extension Game {
         let scoreOne = record[GameRecordKeys.ScoreOne.rawValue] as? Int64
         let scoreTwo = record[GameRecordKeys.ScoreTwo.rawValue] as? Int64
         let date = record[GameRecordKeys.Date.rawValue] as? Date
+        
+        let courtRef = record["courtRef"] as? CKRecord.Reference
 
-        self.init(id: record.recordID, name: name, teamOne: teamOne, teamTwo: teamTwo, scoreOne: scoreOne, scoreTwo: scoreTwo, date: date)
+        self.init(id: record.recordID, name: name, teamOne: teamOne, teamTwo: teamTwo, scoreOne: scoreOne, scoreTwo: scoreTwo, date: date, courtRef: courtRef)
     }
 }
 
@@ -47,6 +51,9 @@ extension Game {
         record[GameRecordKeys.ScoreOne.rawValue] = scoreOne as? CKRecordValue
         record[GameRecordKeys.ScoreTwo.rawValue] = scoreTwo as? CKRecordValue
         record[GameRecordKeys.Date.rawValue] = date as? CKRecordValue
+        if let courtRef = courtRef {
+                    record["courtRef"] = courtRef
+                }
         return record
     }
 }
