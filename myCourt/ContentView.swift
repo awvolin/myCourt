@@ -223,12 +223,13 @@ struct LoggedInView: View {
                     }
                     Text("Previous Games")
                         .font(.largeTitle.bold())
-                    List(gameViewModel.games) { game in
-                        if let teamOne = game.teamOne {
-                            Text(teamOne)
-                        }
-                    }
-                }
+                    LazyVStack {
+                                            ForEach(gameViewModel.games) { game in
+                                                GameRow(game: game)
+                                            }
+                                        }
+                                        .padding(.top)
+                                    }
                 .padding()
                 
                 Spacer() 
@@ -249,6 +250,46 @@ struct LoggedInView: View {
     }
     
 }
+
+struct GameRow: View {
+    let game: Game
+
+    var body: some View {
+        HStack(spacing: 16) {
+            // Team One's Name
+            Text(game.teamOne ?? "Unknown Team")
+                .font(.headline)
+                .foregroundColor(.blue)
+            
+            Spacer() // pushes text apart
+            
+            // Scores with a dash between them
+            VStack {
+                Text(scoreRepresentation)
+                    .font(.title2)
+                    .foregroundColor(.black)
+            }
+            
+            Spacer() // pushes text apart
+            
+            // Team Two's Name
+            Text(game.teamTwo ?? "Unknown Team")
+                .font(.headline)
+                .foregroundColor(.red)
+        }
+        .frame(maxWidth: .infinity, minHeight: 50) // stretch across screen
+        .background(Color.gray.opacity(0.2)) // background of the box
+        .cornerRadius(8) // rounded corners
+        .padding(.vertical, 4) // space between boxes
+    }
+    
+    var scoreRepresentation: String {
+        let scoreOne = game.scoreOne ?? 0
+        let scoreTwo = game.scoreTwo ?? 0
+        return "\(scoreOne) - \(scoreTwo)"
+    }
+}
+
 
 //  Helper for image asset conversion
 
