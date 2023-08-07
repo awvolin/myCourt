@@ -18,17 +18,27 @@ class GameViewModel: ObservableObject {
 
     func getGames() async throws {
         let query = CKQuery(recordType: GameRecordKeys.type.rawValue, predicate: NSPredicate(value: true))
-        query.sortDescriptors = [NSSortDescriptor(key: GameRecordKeys.Date.rawValue, ascending: true)]
+
         let result = try await db.records(matching: query)
         let records = result.matchResults.compactMap { try? $0.1.get() }
 
         DispatchQueue.main.async {
+            self.gameDictionary = [:]  // Clear previous games
+            print("Fetched \(records.count) records from CloudKit")  // This will print how many records you fetched from CloudKit
+
             records.forEach { record in
-                self.gameDictionary[record.recordID] = Game(record: record)
+                if let game = Game(record: record) {
+                    self.gameDictionary[record.recordID] = game
+                    print("Successfully created a Game object and added it to gameDictionary") // This will print every time you successfully create a Game object and add it to gameDictionary
+                } else {
+                    print("Failed to create a Game object from record \(record.recordID.recordName)") // This will print when you fail to create a Game object from a record
+                }
             }
             print("getGames(): Fetched \(self.gameDictionary.count) games") // Debug print
         }
     }
+
+
 
     func getGames(for courtID: CKRecord.ID) async throws {
         let predicate = NSPredicate(format: "%K == %@", GameRecordKeys.CourtRef.rawValue, CKRecord.Reference(recordID: courtID, action: .deleteSelf))
@@ -45,4 +55,34 @@ class GameViewModel: ObservableObject {
             print("getGames(for:): Fetched \(self.gameDictionary.count) games for court ID \(courtID.recordName)") // Debug print
         }
     }
+    
+    
+    //debugging function 
+    func checkGames() async {
+            let predicate = NSPredicate(value: true)
+            let query = CKQuery(recordType: GameRecordKeys.type.rawValue, predicate: predicate)
+            do {
+                let result = try await db.records(matching: query)
+                let records = result.matchResults.compactMap { try? $0.1.get() }
+
+                DispatchQueue.main.async {
+                    print("checkGames(): Fetched \(records.count) games")
+                    for record in records {
+                        print("Game record ID: \(record.recordID.recordName)")
+                        if let courtRef = record[GameRecordKeys.CourtRef.rawValue] as? CKRecord.Reference {
+                            print("  Court reference ID: \(courtRef.recordID.recordName)")
+                        }
+                        if let date = record[GameRecordKeys.Date.rawValue] as? Date {
+                            let formatter = DateFormatter()
+                            formatter.dateStyle = .medium
+                            formatter.timeStyle = .medium
+                            print("  Game date: \(formatter.string(from: date))")
+                        }
+                        print("---")
+                    }
+                }
+            } catch {
+                print("An error occurred while fetching games: \(error)")
+            }
+        }
 }
