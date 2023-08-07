@@ -107,37 +107,52 @@ struct ContentView: View {
 // Main view
 //
 
-struct LoggedInView: View {
-    @Binding var loggedIn: Bool
-    var username: String
-    var logOutAction: () -> Void
-    
-    @State private var courtName: String = ""
-    @StateObject private var model = CourtViewModel()
-    @StateObject private var gameViewModel = GameViewModel()    
-    @Namespace var namespace
-    @State private var selectedCourt: Court?
-    
-    var body: some View {
-       
-        //Cards shown up to "else"
+    struct LoggedInView: View {
+        @Binding var loggedIn: Bool
+        var username: String
+        var logOutAction: () -> Void
         
-        if selectedCourt == nil {
-            VStack(spacing: 20) {
-                TextField("Enter Court", text: $courtName)
-                    .textFieldStyle(.roundedBorder)
-                    .padding()
-                    .onSubmit {
-                        Task {
-                            do {
-                                let court = Court(name: courtName)
-                                try await model.addCourt(court: court)
-                            } catch {
-                                print("Failed to add court: \(error)")
+        @State private var courtName: String = ""
+        @StateObject private var model = CourtViewModel()
+        @StateObject private var gameViewModel = GameViewModel()
+        @Namespace var namespace
+        @State private var selectedCourt: Court?
+        
+        var body: some View {
+            
+            //Cards shown up to "else"
+            
+            if selectedCourt == nil {
+                VStack(spacing: 20) {
+                    ZStack {
+                        HStack {
+                            Button(action: {
+                                logOutAction()
+                                loggedIn = false
+                            }) {
+                                Text("Log Out")
+                            }
+                            Spacer()
+                        }
+
+                        Text("Courts")
+                            .font(.title)
+                        
+                        HStack {
+                            Spacer()
+                            Button(action: {
+                                // Add court functionality
+                            }) {
+                                Image(systemName: "plus")
+                                    .foregroundColor(.white)
+                                    .padding(10)  // Adjust this value if the plus button is too big
+                                    .background(Color.blue)
+                                    .clipShape(Circle())
                             }
                         }
                     }
-                
+                    .padding(.horizontal)
+                    
                 ScrollView {
                     ForEach(model.courts, id: \.id) { court in
                         VStack (alignment: .leading, spacing: 12) {
@@ -181,22 +196,17 @@ struct LoggedInView: View {
                         }
                     }
                 }
-                
-                Button("Log out", action: {
-                    logOutAction()
-                    loggedIn = false
-                })
             }
             .onAppear {
-                            Task {
-                                do {
-                                    try await model.getCourts()
-                                    try await gameViewModel.getGames()
-                                } catch {
-                                    print("Error fetching courts: \(error)")
-                                }
-                            }
-                        }
+                Task {
+                    do {
+                        try await model.getCourts()
+                        try await gameViewModel.getGames()
+                    } catch {
+                        print("Error fetching courts: \(error)")
+                    }
+                }
+            }
             
             //  Showing information on one court
             
@@ -207,7 +217,7 @@ struct LoggedInView: View {
                     .scaledToFit() // Adjust to fit the width and retain original aspect ratio
                     .frame(maxWidth: .infinity) // Ensure it stretches across the width of the device
                     .matchedGeometryEffect(id: "image\(String(describing: selectedCourt!.id))", in: namespace)
-
+                
                 VStack(alignment: .leading) {
                     Text(selectedCourt!.name)
                         .font(.largeTitle.weight(.bold))
@@ -224,15 +234,15 @@ struct LoggedInView: View {
                     Text("Previous Games")
                         .font(.largeTitle.bold())
                     LazyVStack {
-                                            ForEach(gameViewModel.games) { game in
-                                                GameRow(game: game)
-                                            }
-                                        }
-                                        .padding(.top)
-                                    }
+                        ForEach(gameViewModel.games) { game in
+                            GameRow(game: game)
+                        }
+                    }
+                    .padding(.top)
+                }
                 .padding()
                 
-                Spacer() 
+                Spacer()
             }
             .background(Color.white
                 .matchedGeometryEffect(id: "background\(String(describing: selectedCourt!.id))", in: namespace)
@@ -245,7 +255,7 @@ struct LoggedInView: View {
                     selectedCourt = nil
                 }
             }
-
+            
         }
     }
     
@@ -253,7 +263,7 @@ struct LoggedInView: View {
 
 struct GameRow: View {
     let game: Game
-
+    
     var body: some View {
         HStack(spacing: 16) {
             // Team One's Name
