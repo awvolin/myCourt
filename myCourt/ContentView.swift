@@ -179,13 +179,18 @@ struct LoggedInView: View {
                                 selectedCourt = court
                                 Task {
                                     do {
-                                        try await gameViewModel.getGames()
+                                        guard let courtID = court.id else {
+                                            print("Error: Court ID is missing!")
+                                            return
+                                        }
+                                        try await gameViewModel.getGames(for: courtID)
                                     } catch {
                                         print("Error fetching games for court \(court.id!): \(error)")
                                     }
                                 }
                             }
                         }
+
                     }
                 }
             }
