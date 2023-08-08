@@ -190,13 +190,13 @@ struct LoggedInView: View {
                                 }
                             }
                         }
-
+                        
                     }
                 }
             }
             .sheet(isPresented: $showAddCourt) {
                 NewCourtView()
-                    }
+            }
             .onAppear {
                 Task {
                     do {
@@ -224,12 +224,12 @@ struct LoggedInView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .matchedGeometryEffect(id: "title\(String(describing: selectedCourt!.id))", in: namespace)
                     Spacer()
-                            .frame(height: 10)
+                        .frame(height: 10)
                     if let selectedCourtDescription = selectedCourt?.description {
                         Text(selectedCourtDescription)
                             .foregroundColor(.gray)
                             .lineLimit(nil)  // Remove line limit
-                                    .fixedSize(horizontal: false, vertical: true)
+                            .fixedSize(horizontal: false, vertical: true)
                             .matchedGeometryEffect(id: "subtitle\(String(describing: selectedCourt!.id))", in: namespace)
                     }
                     HStack {
@@ -259,8 +259,8 @@ struct LoggedInView: View {
                 Spacer()
             }
             .sheet(isPresented: $showAddGame) {
-                NewGameView()
-                    }
+                NewGameView(associatedCourt: selectedCourt)
+            }
             .background(Color.white
                 .matchedGeometryEffect(id: "background\(String(describing: selectedCourt!.id))", in: namespace)
             )
@@ -269,7 +269,6 @@ struct LoggedInView: View {
             .padding(10)
             .onTapGesture {
                 withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
-                    selectedCourt = nil
                 }
             }
             
@@ -335,7 +334,7 @@ struct NewCourtView: View {
                 .font(.title)
                 .fontWeight(.bold)
                 .padding()
-
+            
             VStack(spacing: 20) {
                 VStack(alignment: .leading) {
                     Text("Court Name")
@@ -356,11 +355,11 @@ struct NewCourtView: View {
                         .background(Color.gray.opacity(0.1))
                         .cornerRadius(8)
                 }
-
+                
                 Button("Select Image") {
                     showingImagePicker.toggle()
                 }
-
+                
                 if let courtImage = courtImage {
                     courtImage
                         .resizable()
@@ -372,10 +371,45 @@ struct NewCourtView: View {
             .padding(.horizontal)
             
             Spacer()
+            
+            @ObservedObject var courtVM = CourtViewModel()
 
             Button("Add Court") {
-                // Handle save logic here
+                // Convert UIImage to CKAsset
+                let asset: CKAsset? = {
+                    guard let image = selectedUIImage else { return nil }
+                    let data = image.jpegData(compressionQuality: 0.7)
+                    let tempURL = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(UUID().uuidString).appendingPathExtension("jpeg")
+                    do {
+                        try data?.write(to: tempURL)
+                        return CKAsset(fileURL: tempURL)
+                    } catch {
+                        print("Error saving image to temporary directory: \(error)")
+                        return nil
+                    }
+                }()
+
+                let newCourt = Court(name: courtName, image: asset, description: courtDescription)
+                
+                Task {
+                    do {
+                        try await courtVM.addCourt(court: newCourt)
+                        // Optionally, reset fields and UI states after successful addition
+                        courtName = ""
+                        courtDescription = ""
+                        selectedUIImage = nil
+                    } catch {
+                        print("Error adding new court: \(error)")
+                        // Handle the error, possibly with an alert to the user.
+                    }
+                }
             }
+            .padding()
+            .background(Color.blue)
+            .foregroundColor(.white)
+            .cornerRadius(8)
+            .frame(maxWidth: .infinity, alignment: .center)
+
             .padding()
             .background(Color.blue)
             .foregroundColor(.white)
@@ -391,16 +425,15 @@ struct NewCourtView: View {
 }
 
 struct NewGameView: View {
-    @State private var courtName: String = ""
-    @State private var courtDescription: String = ""
-    @State private var showingImagePicker: Bool = false
-    @State private var selectedUIImage: UIImage? = nil
-    var courtImage: Image? {
-        if let uiImage = selectedUIImage {
-            return Image(uiImage: uiImage)
-        }
-        return nil
-    }
+    var associatedCourt: Court?
+    @State private var gameDate = Date()
+    @State private var teamOne: String = ""
+    @State private var scoreOne: String = ""
+    @State private var teamTwo: String = ""
+    @State private var scoreTwo: String = ""
+    
+    @ObservedObject var gameViewModel = GameViewModel()
+
     
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -408,47 +441,100 @@ struct NewGameView: View {
                 .font(.title)
                 .fontWeight(.bold)
                 .padding()
-
+            
             VStack(spacing: 20) {
-                VStack(alignment: .leading) {
-                    Text("Court Name")
-                        .font(.headline)
-                    TextField("Enter court name...", text: $courtName)
-                        .textFieldStyle(PlainTextFieldStyle())
-                        .padding(10)
-                        .background(Color.gray.opacity(0.1))
-                        .cornerRadius(8)
+                DatePicker("Game Date", selection: $gameDate, displayedComponents: .date)
+                    .padding()
+                    .background(Color.gray.opacity(0.1))
+                    .cornerRadius(8)
+                
+                HStack(spacing: 20) {
+                    VStack(alignment: .leading) {
+                        Text("Team")
+                            .font(.headline)
+                        TextField("Team One", text: $teamOne)
+                            .textFieldStyle(PlainTextFieldStyle())
+                            .padding(10)
+                            .background(Color.gray.opacity(0.1))
+                            .cornerRadius(8)
+                    }
+                    
+                    VStack(alignment: .leading) {
+                        Text("Score")
+                            .font(.headline)
+                        TextField("Score One", text: $scoreOne)
+                            .textFieldStyle(PlainTextFieldStyle())
+                            .padding(10)
+                            .background(Color.gray.opacity(0.1))
+                            .cornerRadius(8)
+                            .keyboardType(.numberPad)  // Only numbers for score input
+                    }
                 }
                 
-                VStack(alignment: .leading) {
-                    Text("Description")
-                        .font(.headline)
-                    TextField("Enter court description...", text: $courtDescription)
-                        .textFieldStyle(PlainTextFieldStyle())
-                        .padding(10)
-                        .background(Color.gray.opacity(0.1))
-                        .cornerRadius(8)
+                HStack(spacing: 20) {
+                    VStack(alignment: .leading) {
+                        Text("Team")
+                            .font(.headline)
+                        TextField("Team Two", text: $teamTwo)
+                            .textFieldStyle(PlainTextFieldStyle())
+                            .padding(10)
+                            .background(Color.gray.opacity(0.1))
+                            .cornerRadius(8)
+                    }
+                    
+                    VStack(alignment: .leading) {
+                        Text("Score")
+                            .font(.headline)
+                        TextField("Score Two", text: $scoreTwo)
+                            .textFieldStyle(PlainTextFieldStyle())
+                            .padding(10)
+                            .background(Color.gray.opacity(0.1))
+                            .cornerRadius(8)
+                            .keyboardType(.numberPad)  // Only numbers for score input
+                    }
                 }
-
-                Button("Select Image") {
-                    showingImagePicker.toggle()
-                }
-
-                if let courtImage = courtImage {
-                    courtImage
-                        .resizable()
-                        .scaledToFit()
-                        .frame(height: 200)
-                        .cornerRadius(8)
-                }
+                
             }
             .padding(.horizontal)
             
             Spacer()
+            
+            Button("Add Game") {
+                Task {
+                    do {
+                        guard let scoreOneInt = Int64(scoreOne), let scoreTwoInt = Int64(scoreTwo) else {
+                            print("Invalid scores entered!")
+                            return
+                        }
 
-            Button("Add Court") {
-                // Handle save logic here
+                        // Simplified court reference creation
+                        let courtReference = associatedCourt?.id.map { CKRecord.Reference(recordID: $0, action: .none) }
+
+                        // Create the game object with the simplified court reference
+                        let newGame = Game(teamOne: teamOne,
+                                           teamTwo: teamTwo,
+                                           scoreOne: scoreOneInt,
+                                           scoreTwo: scoreTwoInt,
+                                           date: gameDate,
+                                           CourtRef: courtReference)
+
+                        // Save the game to the database
+                        try await gameViewModel.addGame(game: newGame)
+
+                        // Optional: Reset the fields
+                        teamOne = ""
+                        scoreOne = ""
+                        teamTwo = ""
+                        scoreTwo = ""
+
+                        print("Game added successfully!")
+                    } catch {
+                        print("Failed to add game: \(error)")
+                    }
+                }
             }
+
+
             .padding()
             .background(Color.blue)
             .foregroundColor(.white)
@@ -457,11 +543,9 @@ struct NewGameView: View {
         }
         .background(Color.white)
         .padding()
-        .sheet(isPresented: $showingImagePicker) {
-            ImagePicker(isPresented: $showingImagePicker, selectedImage: $selectedUIImage)
-        }
     }
 }
+
 
 
 struct ImagePicker: UIViewControllerRepresentable {

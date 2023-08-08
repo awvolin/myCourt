@@ -18,7 +18,8 @@ struct Game: Identifiable {
     var scoreOne: Int64?
     var scoreTwo: Int64?
     var date: Date
-    var courtRef: CKRecord.Reference?
+    var CourtRef: CKRecord.Reference?
+
 }
 
 extension Game {
@@ -29,9 +30,11 @@ extension Game {
         let scoreTwo = record[GameRecordKeys.ScoreTwo.rawValue] as? Int64
         guard let date = record[GameRecordKeys.Date.rawValue] as? Date else { return nil }
         
-        let courtRef = record["courtRef"] as? CKRecord.Reference
+        let CourtRef = record[GameRecordKeys.CourtRef.rawValue] as? CKRecord.Reference
 
-        self.init(id: record.recordID, teamOne: teamOne, teamTwo: teamTwo, scoreOne: scoreOne, scoreTwo: scoreTwo, date: date, courtRef: courtRef)
+
+        self.init(id: record.recordID, teamOne: teamOne, teamTwo: teamTwo, scoreOne: scoreOne, scoreTwo: scoreTwo, date: date, CourtRef: CourtRef)
+
     }
 }
 
@@ -43,9 +46,10 @@ extension Game {
         record[GameRecordKeys.ScoreOne.rawValue] = scoreOne as? CKRecordValue
         record[GameRecordKeys.ScoreTwo.rawValue] = scoreTwo as? CKRecordValue
         record[GameRecordKeys.Date.rawValue] = date as CKRecordValue
-        if let courtRef = courtRef {
-                    record["courtRef"] = courtRef
-                }
+        if let courtReference = CourtRef {
+            record[GameRecordKeys.CourtRef.rawValue] = courtReference
+        }
+
         return record
     }
 }
