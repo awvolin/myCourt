@@ -269,6 +269,7 @@ struct LoggedInView: View {
             .padding(10)
             .onTapGesture {
                 withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                    selectedCourt = nil
                 }
             }
             
