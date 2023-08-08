@@ -107,52 +107,43 @@ struct ContentView: View {
 // Main view
 //
 
-    struct LoggedInView: View {
-        @Binding var loggedIn: Bool
-        var username: String
-        var logOutAction: () -> Void
+struct LoggedInView: View {
+    @Binding var loggedIn: Bool
+    var username: String
+    var logOutAction: () -> Void
+    
+    @State private var courtName: String = ""
+    @StateObject private var model = CourtViewModel()
+    @StateObject private var gameViewModel = GameViewModel()
+    @Namespace var namespace
+    @State private var selectedCourt: Court?
+    
+    @State private var showAddCourt = false
+    
+    var body: some View {
         
-        @State private var courtName: String = ""
-        @StateObject private var model = CourtViewModel()
-        @StateObject private var gameViewModel = GameViewModel()
-        @Namespace var namespace
-        @State private var selectedCourt: Court?
+        //Cards shown up to "else"
         
-        var body: some View {
-            
-            //Cards shown up to "else"
-            
-            if selectedCourt == nil {
-                VStack(spacing: 20) {
-                    ZStack {
-                        HStack {
-                            Button(action: {
-                                logOutAction()
-                                loggedIn = false
-                            }) {
-                                Text("Log Out")
-                            }
-                            Spacer()
-                        }
-
-                        Text("Courts")
-                            .font(.title)
-                        
-                        HStack {
-                            Spacer()
-                            Button(action: {
-                                // Add court functionality
-                            }) {
-                                Image(systemName: "plus")
-                                    .foregroundColor(.white)
-                                    .padding(10)  // Adjust this value if the plus button is too big
-                                    .background(Color.blue)
-                                    .clipShape(Circle())
-                            }
-                        }
-                    }
-                    .padding(.horizontal)
+        if selectedCourt == nil {
+            VStack(spacing: 20) {
+                HStack {
+                    Text("My Courts")
+                        .font(.largeTitle)
+                        .bold()
+                    Spacer()
                     
+                    Button(action: {
+                        showAddCourt.toggle()
+                    }) {
+                        Image(systemName: "plus")
+                            .foregroundColor(.white)
+                            .padding(15)
+                            .background(Color.blue)
+                            .clipShape(Circle())
+                    }
+                }
+                .padding(.horizontal)
+                
                 ScrollView {
                     ForEach(model.courts, id: \.id) { court in
                         VStack (alignment: .leading, spacing: 12) {
@@ -197,6 +188,9 @@ struct ContentView: View {
                     }
                 }
             }
+            .sheet(isPresented: $showAddCourt) {
+                NewCourtView()
+                    }
             .onAppear {
                 Task {
                     do {
@@ -223,16 +217,30 @@ struct ContentView: View {
                         .font(.largeTitle.weight(.bold))
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .matchedGeometryEffect(id: "title\(String(describing: selectedCourt!.id))", in: namespace)
-                    
+                    Spacer()
+                            .frame(height: 10)
                     if let selectedCourtDescription = selectedCourt?.description {
                         Text(selectedCourtDescription)
-                            .font(.footnote)
                             .foregroundColor(.gray)
-                            .padding(1)
+                            .lineLimit(nil)  // Remove line limit
+                                    .fixedSize(horizontal: false, vertical: true)
                             .matchedGeometryEffect(id: "subtitle\(String(describing: selectedCourt!.id))", in: namespace)
                     }
-                    Text("Previous Games")
-                        .font(.largeTitle.bold())
+                    HStack {
+                        Text("Games")
+                            .font(.largeTitle.bold())
+                        Spacer()
+                        Button(action: {
+                            showAddCourt.toggle()
+                        }) {
+                            Image(systemName: "plus")
+                                .foregroundColor(.white)
+                                .padding(10)
+                                .background(Color.blue)
+                                .clipShape(Circle())
+                        }
+                    }
+                    
                     LazyVStack {
                         ForEach(gameViewModel.games) { game in
                             GameRow(game: game)
@@ -297,6 +305,113 @@ struct GameRow: View {
         let scoreOne = game.scoreOne ?? 0
         let scoreTwo = game.scoreTwo ?? 0
         return "\(scoreOne) - \(scoreTwo)"
+    }
+}
+
+struct NewCourtView: View {
+    @State private var courtName: String = ""
+    @State private var courtDescription: String = ""
+    @State private var showingImagePicker: Bool = false
+    @State private var selectedUIImage: UIImage? = nil
+    var courtImage: Image? {
+        if let uiImage = selectedUIImage {
+            return Image(uiImage: uiImage)
+        }
+        return nil
+    }
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 20) {
+            Text("New Court")
+                .font(.title)
+                .fontWeight(.bold)
+                .padding()
+
+            VStack(spacing: 20) {
+                VStack(alignment: .leading) {
+                    Text("Court Name")
+                        .font(.headline)
+                    TextField("Enter court name...", text: $courtName)
+                        .textFieldStyle(PlainTextFieldStyle())
+                        .padding(10)
+                        .background(Color.gray.opacity(0.1))
+                        .cornerRadius(8)
+                }
+                
+                VStack(alignment: .leading) {
+                    Text("Description")
+                        .font(.headline)
+                    TextField("Enter court description...", text: $courtDescription)
+                        .textFieldStyle(PlainTextFieldStyle())
+                        .padding(10)
+                        .background(Color.gray.opacity(0.1))
+                        .cornerRadius(8)
+                }
+
+                Button("Select Image") {
+                    showingImagePicker.toggle()
+                }
+
+                if let courtImage = courtImage {
+                    courtImage
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 200)
+                        .cornerRadius(8)
+                }
+            }
+            .padding(.horizontal)
+            
+            Spacer()
+
+            Button("Add Court") {
+                // Handle save logic here
+            }
+            .padding()
+            .background(Color.blue)
+            .foregroundColor(.white)
+            .cornerRadius(8)
+            .frame(maxWidth: .infinity, alignment: .center)
+        }
+        .background(Color.white)
+        .padding()
+        .sheet(isPresented: $showingImagePicker) {
+            ImagePicker(isPresented: $showingImagePicker, selectedImage: $selectedUIImage)
+        }
+    }
+}
+
+
+struct ImagePicker: UIViewControllerRepresentable {
+    @Binding var isPresented: Bool
+    @Binding var selectedImage: UIImage?
+    
+    func makeUIViewController(context: Context) -> some UIImagePickerController {
+        let picker = UIImagePickerController()
+        picker.delegate = context.coordinator
+        return picker
+    }
+    
+    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) { }
+    
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
+    
+    class Coordinator: NSObject, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
+        let parent: ImagePicker
+        
+        init(_ parent: ImagePicker) {
+            self.parent = parent
+        }
+        
+        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+            if let uiImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
+                parent.selectedImage = uiImage
+            }
+            
+            parent.isPresented = false
+        }
     }
 }
 
