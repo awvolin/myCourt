@@ -119,6 +119,7 @@ struct LoggedInView: View {
     @State private var selectedCourt: Court?
     
     @State private var showAddCourt = false
+    @State private var showAddGame = false
     
     var body: some View {
         
@@ -231,7 +232,7 @@ struct LoggedInView: View {
                             .font(.largeTitle.bold())
                         Spacer()
                         Button(action: {
-                            showAddCourt.toggle()
+                            showAddGame.toggle()
                         }) {
                             Image(systemName: "plus")
                                 .foregroundColor(.white)
@@ -252,6 +253,9 @@ struct LoggedInView: View {
                 
                 Spacer()
             }
+            .sheet(isPresented: $showAddGame) {
+                NewGameView()
+                    }
             .background(Color.white
                 .matchedGeometryEffect(id: "background\(String(describing: selectedCourt!.id))", in: namespace)
             )
@@ -323,6 +327,79 @@ struct NewCourtView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
             Text("New Court")
+                .font(.title)
+                .fontWeight(.bold)
+                .padding()
+
+            VStack(spacing: 20) {
+                VStack(alignment: .leading) {
+                    Text("Court Name")
+                        .font(.headline)
+                    TextField("Enter court name...", text: $courtName)
+                        .textFieldStyle(PlainTextFieldStyle())
+                        .padding(10)
+                        .background(Color.gray.opacity(0.1))
+                        .cornerRadius(8)
+                }
+                
+                VStack(alignment: .leading) {
+                    Text("Description")
+                        .font(.headline)
+                    TextField("Enter court description...", text: $courtDescription)
+                        .textFieldStyle(PlainTextFieldStyle())
+                        .padding(10)
+                        .background(Color.gray.opacity(0.1))
+                        .cornerRadius(8)
+                }
+
+                Button("Select Image") {
+                    showingImagePicker.toggle()
+                }
+
+                if let courtImage = courtImage {
+                    courtImage
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 200)
+                        .cornerRadius(8)
+                }
+            }
+            .padding(.horizontal)
+            
+            Spacer()
+
+            Button("Add Court") {
+                // Handle save logic here
+            }
+            .padding()
+            .background(Color.blue)
+            .foregroundColor(.white)
+            .cornerRadius(8)
+            .frame(maxWidth: .infinity, alignment: .center)
+        }
+        .background(Color.white)
+        .padding()
+        .sheet(isPresented: $showingImagePicker) {
+            ImagePicker(isPresented: $showingImagePicker, selectedImage: $selectedUIImage)
+        }
+    }
+}
+
+struct NewGameView: View {
+    @State private var courtName: String = ""
+    @State private var courtDescription: String = ""
+    @State private var showingImagePicker: Bool = false
+    @State private var selectedUIImage: UIImage? = nil
+    var courtImage: Image? {
+        if let uiImage = selectedUIImage {
+            return Image(uiImage: uiImage)
+        }
+        return nil
+    }
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 20) {
+            Text("New Game")
                 .font(.title)
                 .fontWeight(.bold)
                 .padding()
