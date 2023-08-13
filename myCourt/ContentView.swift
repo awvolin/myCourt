@@ -10,11 +10,12 @@ import SwiftUI
 import MapKit
 import CoreLocation
 import CloudKit
+import AuthenticationServices
 
 struct ContentView: View {
     @State private var showingLoginView = false
-    @State var vm = LoginViewModel()
     @State private var loggedIn = false
+    @ObservedObject var loginViewModel = LoginViewModel()
     
     
     var body: some View {
@@ -59,48 +60,39 @@ struct ContentView: View {
                                 .aspectRatio(geo.size, contentMode: .fill)
                                 .edgesIgnoringSafeArea(.all)
                             
-                            VStack {
-                                Image("logo")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame( height: 140)
-                                    .foregroundColor(Color.white)
-                                    .padding(25)
-                                TextField("Username", text: $vm.username)
-                                    .textFieldStyle(.roundedBorder)
-                                    .textInputAutocapitalization(.never)
-                                SecureField("Password", text: $vm.password)
-                                    .textFieldStyle(.roundedBorder)
-                                    .textInputAutocapitalization(.never)
-                                    .privacySensitive()
-                                HStack {
-                                    Spacer()
-                                    Button("Forgot password?", action: vm.logPressed)
-                                    Spacer()
-                                    Button("Log in", action: {
-                                        vm.authenticate()
-                                        if(vm.authenticated) {
-                                            loggedIn.toggle()
-                                        }
-                                    })
-                                    Spacer()
-                                }
-                                
-                            }
+                           
                             
+                            SignInWithAppleButton(.signIn,
+                                                  onRequest: { request in
+                                // Customize the request if needed
+                            },
+                                                  onCompletion: { result in
+                                switch result {
+                                case .success(let authorization):
+                                    // Handle success here
+                                    loginViewModel.handleAuthorizationAppleIDButtonPress()
+                                case .failure(let error):
+                                    // Handle failure here
+                                    print(error.localizedDescription)
+                                }
+                            })
+                            .frame(width: 200, height: 45)
                         }
-                    }
+                        
+                        
                     
                 }
                 
-                //Logged in - launch loggedInView
-                else {
-                    LoggedInView(loggedIn: $loggedIn, username: vm.username, logOutAction: vm.logOut)
-                }
-                
             }
+            
+            //Logged in - launch loggedInView
+            else {
+                //                    LoggedInView(loggedIn: $loggedIn, username: vm.username, logOutAction: vm.logOut)
+            }
+            
         }
     }
+}
 }
 
 //
@@ -374,7 +366,7 @@ struct NewCourtView: View {
             Spacer()
             
             @ObservedObject var courtVM = CourtViewModel()
-
+            
             Button("Add Court") {
                 // Convert UIImage to CKAsset
                 let asset: CKAsset? = {
@@ -389,7 +381,7 @@ struct NewCourtView: View {
                         return nil
                     }
                 }()
-
+                
                 let newCourt = Court(name: courtName, image: asset, description: courtDescription)
                 
                 Task {
@@ -410,7 +402,7 @@ struct NewCourtView: View {
             .foregroundColor(.white)
             .cornerRadius(8)
             .frame(maxWidth: .infinity, alignment: .center)
-
+            
             .padding()
             .background(Color.blue)
             .foregroundColor(.white)
@@ -434,7 +426,7 @@ struct NewGameView: View {
     @State private var scoreTwo: String = ""
     
     @ObservedObject var gameViewModel = GameViewModel()
-
+    
     
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -507,10 +499,10 @@ struct NewGameView: View {
                             print("Invalid scores entered!")
                             return
                         }
-
+                        
                         // Simplified court reference creation
                         let courtReference = associatedCourt?.id.map { CKRecord.Reference(recordID: $0, action: .none) }
-
+                        
                         // Create the game object with the simplified court reference
                         let newGame = Game(teamOne: teamOne,
                                            teamTwo: teamTwo,
@@ -518,24 +510,24 @@ struct NewGameView: View {
                                            scoreTwo: scoreTwoInt,
                                            date: gameDate,
                                            CourtRef: courtReference)
-
+                        
                         // Save the game to the database
                         try await gameViewModel.addGame(game: newGame)
-
+                        
                         // Optional: Reset the fields
                         teamOne = ""
                         scoreOne = ""
                         teamTwo = ""
                         scoreTwo = ""
-
+                        
                         print("Game added successfully!")
                     } catch {
                         print("Failed to add game: \(error)")
                     }
                 }
             }
-
-
+            
+            
             .padding()
             .background(Color.blue)
             .foregroundColor(.white)
@@ -591,6 +583,8 @@ func image(from asset: CKAsset?) -> Image {
     }
     return Image(uiImage: uiImage)
 }
+
+
 
 // Preview Logic
 
