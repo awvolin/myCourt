@@ -13,16 +13,15 @@ import CloudKit
 import AuthenticationServices
 
 struct ContentView: View {
-    @State private var showingLoginView = false
     @State private var loggedIn = false
-    @ObservedObject var loginViewModel = LoginViewModel()
-    
     
     var body: some View {
-        NavigationStack {
-            
-            //Initial splashscreen
-            if(!showingLoginView) {
+        NavigationView {
+            if loggedIn {
+                // Show the logged-in view when the user is logged in
+                LoggedInView()
+            } else {
+                // Show the initial splash screen when the user is not logged in
                 GeometryReader{ geo in
                     ZStack (alignment: .top) {
                         Image("Wallpaper")
@@ -33,11 +32,11 @@ struct ContentView: View {
                             Image("logo")
                                 .resizable()
                                 .scaledToFit()
-                                .frame( height: 140)
+                                .frame(height: 140)
                                 .foregroundColor(Color.white)
                                 .padding(25)
                             Button {
-                                showingLoginView = true
+                                loggedIn = true
                             } label: {
                                 Text("I got next.")
                             }
@@ -50,72 +49,25 @@ struct ContentView: View {
                     }
                 }
             }
-            else {
-                
-                //Login Page
-                if !loggedIn {
-                    GeometryReader{ geo in
-                        ZStack (alignment: .top) {
-                            Color(hue: 0, saturation: 0, brightness: 0.77)
-                                .aspectRatio(geo.size, contentMode: .fill)
-                                .edgesIgnoringSafeArea(.all)
-                            
-                           
-                            
-                            SignInWithAppleButton(.signIn,
-                                                  onRequest: { request in
-                                // Customize the request if needed
-                            },
-                                                  onCompletion: { result in
-                                switch result {
-                                case .success(let authorization):
-                                    // Handle success here
-                                    loginViewModel.handleAuthorizationAppleIDButtonPress()
-                                case .failure(let error):
-                                    // Handle failure here
-                                    print(error.localizedDescription)
-                                }
-                            })
-                            .frame(width: 200, height: 45)
-                        }
-                        
-                        
-                    
-                }
-                
-            }
-            
-            //Logged in - launch loggedInView
-            else {
-                //                    LoggedInView(loggedIn: $loggedIn, username: vm.username, logOutAction: vm.logOut)
-            }
-            
         }
     }
 }
-}
-
 //
 // Main view
 //
-
 struct LoggedInView: View {
-    @Binding var loggedIn: Bool
-    var username: String
-    var logOutAction: () -> Void
-    
     @State private var courtName: String = ""
     @StateObject private var model = CourtViewModel()
     @StateObject private var gameViewModel = GameViewModel()
-    @Namespace var namespace
     @State private var selectedCourt: Court?
     
     @State private var showAddCourt = false
     @State private var showAddGame = false
+    @State private var scale: CGFloat = 0
+    @GestureState private var dragOffset: CGFloat = 0
+        
     
     var body: some View {
-        
-        //Cards shown up to "else"
         
         if selectedCourt == nil {
             VStack(spacing: 20) {
@@ -145,27 +97,33 @@ struct LoggedInView: View {
                                 .aspectRatio(contentMode: .fill)
                                 .frame(height: 120)
                                 .clipped()
-                                .matchedGeometryEffect(id: "image\(String(describing: court.id))", in: namespace)
                             
                             VStack(alignment: .leading) {
                                 Text(court.name)
                                     .font(.largeTitle.weight(.bold))
-                                    .matchedGeometryEffect(id: "title\(String(describing: court.id))", in: namespace)
-                                
                                 if let courtDescription = court.description {
                                     Text(courtDescription)
                                         .font(.footnote)
                                         .foregroundColor(.gray)
-                                        .matchedGeometryEffect(id: "subtitle\(String(describing: court.id))", in: namespace)
                                 }
                             }
                             .padding()
                         }
-                        .background(Color.white
-                            .matchedGeometryEffect(id: "background\(String(describing: court.id))", in: namespace))
+                        .background(Color.white)
                         .cornerRadius(15)
                         .shadow(color: Color.black.opacity(0.15), radius: 5, x: 0, y: 5)
                         .padding(10)
+                        .scaleEffect(scale)
+                        .onAppear {
+                            withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                                scale = 1
+                            }
+                        }
+                        .onDisappear {
+                            withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                                scale = 0
+                            }
+                        }
                         .onTapGesture {
                             withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
                                 selectedCourt = court
@@ -182,7 +140,6 @@ struct LoggedInView: View {
                                 }
                             }
                         }
-                        
                     }
                 }
             }
@@ -199,30 +156,22 @@ struct LoggedInView: View {
                     }
                 }
             }
-            
-            //  Showing information on one court
-            
         } else {
             VStack {
                 image(from: selectedCourt?.image)
                     .resizable()
-                    .scaledToFit() // Adjust to fit the width and retain original aspect ratio
-                    .frame(maxWidth: .infinity) // Ensure it stretches across the width of the device
-                    .matchedGeometryEffect(id: "image\(String(describing: selectedCourt!.id))", in: namespace)
-                
+                    .scaledToFit()
+                    .frame(maxWidth: .infinity)
                 VStack(alignment: .leading) {
                     Text(selectedCourt!.name)
                         .font(.largeTitle.weight(.bold))
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .matchedGeometryEffect(id: "title\(String(describing: selectedCourt!.id))", in: namespace)
-                    Spacer()
-                        .frame(height: 10)
+                    Spacer().frame(height: 10)
                     if let selectedCourtDescription = selectedCourt?.description {
                         Text(selectedCourtDescription)
                             .foregroundColor(.gray)
-                            .lineLimit(nil)  // Remove line limit
+                            .lineLimit(nil)
                             .fixedSize(horizontal: false, vertical: true)
-                            .matchedGeometryEffect(id: "subtitle\(String(describing: selectedCourt!.id))", in: namespace)
                     }
                     HStack {
                         Text("Games")
@@ -238,7 +187,6 @@ struct LoggedInView: View {
                                 .clipShape(Circle())
                         }
                     }
-                    
                     LazyVStack {
                         ForEach(gameViewModel.games) { game in
                             GameRow(game: game)
@@ -247,28 +195,42 @@ struct LoggedInView: View {
                     .padding(.top)
                 }
                 .padding()
-                
                 Spacer()
             }
             .sheet(isPresented: $showAddGame) {
                 NewGameView(associatedCourt: selectedCourt)
             }
-            .background(Color.white
-                .matchedGeometryEffect(id: "background\(String(describing: selectedCourt!.id))", in: namespace)
-            )
+            .background(Color.white)
             .cornerRadius(15)
             .shadow(color: Color.black.opacity(0.15), radius: 10, x: 0, y: 10)
             .padding(10)
-            .onTapGesture {
+            .scaleEffect(scale)
+            .onAppear {
                 withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
-                    selectedCourt = nil
+                    scale = 1
                 }
             }
-            
+            .offset(y: dragOffset)
+                        .gesture(
+                            DragGesture()
+                                .updating($dragOffset) { value, state, _ in
+                                    state = value.translation.height
+                                }
+                                .onEnded { value in
+                                    if value.translation.height > 100 {
+                                        withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                                            scale = 0
+                                            selectedCourt = nil
+                                        }
+                                    }
+                                }
+                        )
+
         }
     }
-    
 }
+
+
 
 struct GameRow: View {
     let game: Game

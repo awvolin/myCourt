@@ -29,9 +29,6 @@ class GameViewModel: ObservableObject {
             records.forEach { record in
                 if let game = Game(record: record) {
                     self.gameDictionary[record.recordID] = game
-                    print("Successfully created a Game object and added it to gameDictionary") // This will print every time you successfully create a Game object and add it to gameDictionary
-                } else {
-                    print("Failed to create a Game object from record \(record.recordID.recordName)") // This will print when you fail to create a Game object from a record
                 }
             }
             print("getGames(): Fetched \(self.gameDictionary.count) games") // Debug print
