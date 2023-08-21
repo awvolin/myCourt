@@ -33,7 +33,6 @@ struct ContentView: View {
                                 .resizable()
                                 .scaledToFit()
                                 .frame(height: 140)
-                                .foregroundColor(Color.white)
                                 .padding(25)
                             Button {
                                 loggedIn = true
@@ -91,7 +90,7 @@ struct LoggedInView: View {
                 
                 ScrollView {
                     ForEach(model.courts, id: \.id) { court in
-                        VStack (alignment: .leading, spacing: 12) {
+                        VStack (alignment: .leading, spacing: 0) {
                             image(from: court.image)
                                 .resizable()
                                 .aspectRatio(contentMode: .fill)
@@ -101,6 +100,7 @@ struct LoggedInView: View {
                             VStack(alignment: .leading) {
                                 Text(court.name)
                                     .font(.largeTitle.weight(.bold))
+                                    .foregroundColor(.black)
                                 if let courtDescription = court.description {
                                     Text(courtDescription)
                                         .font(.footnote)
@@ -166,6 +166,7 @@ struct LoggedInView: View {
                     Text(selectedCourt!.name)
                         .font(.largeTitle.weight(.bold))
                         .frame(maxWidth: .infinity, alignment: .leading)
+                        .foregroundColor(.black)
                     Spacer().frame(height: 10)
                     if let selectedCourtDescription = selectedCourt?.description {
                         Text(selectedCourtDescription)
@@ -176,6 +177,7 @@ struct LoggedInView: View {
                     HStack {
                         Text("Games")
                             .font(.largeTitle.bold())
+                            .foregroundColor(.black)
                         Spacer()
                         Button(action: {
                             showAddGame.toggle()
@@ -373,6 +375,7 @@ struct NewCourtView: View {
         }
         .background(Color.white)
         .padding()
+        .preferredColorScheme(.light)
         .sheet(isPresented: $showingImagePicker) {
             ImagePicker(isPresented: $showingImagePicker, selectedImage: $selectedUIImage)
         }
@@ -495,7 +498,7 @@ struct NewGameView: View {
             .foregroundColor(.white)
             .cornerRadius(8)
             .frame(maxWidth: .infinity, alignment: .center)
-        }
+        }.preferredColorScheme(.light)
         .background(Color.white)
         .padding()
     }

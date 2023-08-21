@@ -24,14 +24,12 @@ class GameViewModel: ObservableObject {
 
         DispatchQueue.main.async {
             self.gameDictionary = [:]  // Clear previous games
-            print("Fetched \(records.count) records from CloudKit")  // This will print how many records you fetched from CloudKit
-
+            
             records.forEach { record in
                 if let game = Game(record: record) {
                     self.gameDictionary[record.recordID] = game
                 }
             }
-            print("getGames(): Fetched \(self.gameDictionary.count) games") // Debug print
         }
     }
 
