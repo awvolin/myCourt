@@ -17,6 +17,7 @@
 		2C2EB1942A44C625009D33E3 /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C2EB1932A44C625009D33E3 /* LoginViewModel.swift */; };
 		2C41FB582A7EC27300024414 /* CourtViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C41FB572A7EC27300024414 /* CourtViewModel.swift */; };
 		2C41FB5A2A7EC39900024414 /* Court.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C41FB592A7EC39900024414 /* Court.swift */; };
+		2C6DC6772A93E3C4009B7409 /* TCM.TTF in Resources */ = {isa = PBXBuildFile; fileRef = 2C6DC6762A93E3C4009B7409 /* TCM.TTF */; };
 		2C8ABF182A80677700DB20EA /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C8ABF172A80677700DB20EA /* Game.swift */; };
 		2C8ABF1A2A806BDD00DB20EA /* GameViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C8ABF192A806BDD00DB20EA /* GameViewModel.swift */; };
 /* End PBXBuildFile section */
@@ -55,6 +56,7 @@
 		2C41FB562A7EBC1A00024414 /* myCourtRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = myCourtRelease.entitlements; sourceTree = "<group>"; };
 		2C41FB572A7EC27300024414 /* CourtViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourtViewModel.swift; sourceTree = "<group>"; };
 		2C41FB592A7EC39900024414 /* Court.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Court.swift; sourceTree = "<group>"; };
+		2C6DC6762A93E3C4009B7409 /* TCM.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = TCM.TTF; sourceTree = "<group>"; };
 		2C8ABF172A80677700DB20EA /* Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
 		2C8ABF192A806BDD00DB20EA /* GameViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -109,6 +111,7 @@
 			children = (
 				2C41FB562A7EBC1A00024414 /* myCourtRelease.entitlements */,
 				2C2EB1952A4A3B17009D33E3 /* Info.plist */,
+				2C6DC6762A93E3C4009B7409 /* TCM.TTF */,
 				2C2EB1662A437380009D33E3 /* myCourtApp.swift */,
 				2C2EB1682A437380009D33E3 /* ContentView.swift */,
 				2C2EB1932A44C625009D33E3 /* LoginViewModel.swift */,
@@ -252,6 +255,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2C6DC6772A93E3C4009B7409 /* TCM.TTF in Resources */,
 				2C2EB16F2A437381009D33E3 /* Preview Assets.xcassets in Resources */,
 				2C2EB16B2A437381009D33E3 /* Assets.xcassets in Resources */,
 			);
