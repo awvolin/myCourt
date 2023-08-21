@@ -77,7 +77,6 @@ class GameViewModel: ObservableObject {
                     }
                 }
             } catch {
-                print("An error occurred while fetching games: \(error)")
             }
         }
 }

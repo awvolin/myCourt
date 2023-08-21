@@ -64,170 +64,192 @@ struct LoggedInView: View {
     @State private var showAddGame = false
     @State private var scale: CGFloat = 0
     @GestureState private var dragOffset: CGFloat = 0
-        
+    
     
     var body: some View {
-        
-        if selectedCourt == nil {
-            VStack(spacing: 20) {
-                HStack {
-                    Text("My Courts")
-                        .font(.largeTitle)
-                        .bold()
-                    Spacer()
-                    
-                    Button(action: {
-                        showAddCourt.toggle()
-                    }) {
-                        Image(systemName: "plus")
-                            .foregroundColor(.white)
-                            .padding(15)
-                            .background(Color.blue)
-                            .clipShape(Circle())
-                    }
-                }
-                .padding(.horizontal)
-                
-                ScrollView {
-                    ForEach(model.courts, id: \.id) { court in
-                        VStack (alignment: .leading, spacing: 0) {
-                            image(from: court.image)
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(height: 120)
-                                .clipped()
-                            
-                            VStack(alignment: .leading) {
-                                Text(court.name)
-                                    .font(.largeTitle.weight(.bold))
-                                    .foregroundColor(.black)
-                                if let courtDescription = court.description {
-                                    Text(courtDescription)
-                                        .font(.footnote)
-                                        .foregroundColor(.gray)
-                                }
-                            }
-                            .padding()
-                        }
-                        .background(Color.white)
-                        .cornerRadius(15)
-                        .shadow(color: Color.black.opacity(0.15), radius: 5, x: 0, y: 5)
-                        .padding(10)
-                        .scaleEffect(scale)
-                        .onAppear {
-                            withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
-                                scale = 1
-                            }
-                        }
-                        .onDisappear {
-                            withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
-                                scale = 0
-                            }
-                        }
-                        .onTapGesture {
-                            withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
-                                selectedCourt = court
-                                Task {
-                                    do {
-                                        guard let courtID = court.id else {
-                                            print("Error: Court ID is missing!")
-                                            return
-                                        }
-                                        try await gameViewModel.getGames(for: courtID)
-                                    } catch {
-                                        print("Error fetching games for court \(court.id!): \(error)")
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            .sheet(isPresented: $showAddCourt) {
-                NewCourtView()
-            }
-            .onAppear {
-                Task {
-                    do {
-                        try await model.getCourts()
-                        try await gameViewModel.getGames()
-                    } catch {
-                        print("Error fetching courts: \(error)")
-                    }
-                }
-            }
-        } else {
-            VStack {
-                image(from: selectedCourt?.image)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(maxWidth: .infinity)
-                VStack(alignment: .leading) {
-                    Text(selectedCourt!.name)
-                        .font(.largeTitle.weight(.bold))
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .foregroundColor(.black)
-                    Spacer().frame(height: 10)
-                    if let selectedCourtDescription = selectedCourt?.description {
-                        Text(selectedCourtDescription)
-                            .foregroundColor(.gray)
-                            .lineLimit(nil)
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
+        VStack {
+            if selectedCourt == nil {
+                VStack(spacing: 20) {
                     HStack {
-                        Text("Games")
-                            .font(.largeTitle.bold())
-                            .foregroundColor(.black)
+                        Text("My Courts")
+                            .font(.largeTitle)
+                            .bold()
                         Spacer()
+                        
                         Button(action: {
-                            showAddGame.toggle()
+                            showAddCourt.toggle()
                         }) {
                             Image(systemName: "plus")
                                 .foregroundColor(.white)
-                                .padding(10)
+                                .padding(15)
                                 .background(Color.blue)
                                 .clipShape(Circle())
                         }
                     }
-                    LazyVStack {
-                        ForEach(gameViewModel.games) { game in
-                            GameRow(game: game)
-                        }
-                    }
-                    .padding(.top)
-                }
-                .padding()
-                Spacer()
-            }
-            .sheet(isPresented: $showAddGame) {
-                NewGameView(associatedCourt: selectedCourt)
-            }
-            .background(Color.white)
-            .cornerRadius(15)
-            .shadow(color: Color.black.opacity(0.15), radius: 10, x: 0, y: 10)
-            .padding(10)
-            .scaleEffect(scale)
-            .onAppear {
-                withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
-                    scale = 1
-                }
-            }
-            .offset(y: dragOffset)
-                        .gesture(
-                            DragGesture()
-                                .updating($dragOffset) { value, state, _ in
-                                    state = value.translation.height
+                    .padding(.horizontal)
+                    
+                    ScrollView {
+                        ForEach(model.courts, id: \.id) { court in
+                            VStack (alignment: .leading, spacing: 0) {
+                                image(from: court.image)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(height: 120)
+                                    .clipped()
+                                
+                                VStack(alignment: .leading) {
+                                    Text(court.name)
+                                        .font(.largeTitle.weight(.bold))
+                                        .foregroundColor(.black)
+                                    if let courtDescription = court.description {
+                                        Text(courtDescription)
+                                            .font(.footnote)
+                                            .foregroundColor(.gray)
+                                    }
                                 }
-                                .onEnded { value in
-                                    if value.translation.height > 100 {
-                                        withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
-                                            scale = 0
-                                            selectedCourt = nil
+                                .padding()
+                            }
+                            .background(Color.white)
+                            .cornerRadius(15)
+                            .shadow(color: Color.black.opacity(0.15), radius: 5, x: 0, y: 5)
+                            .padding(10)
+                            .scaleEffect(scale)
+                            .onAppear {
+                                withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                                    scale = 1
+                                }
+                            }
+                            .onTapGesture {
+                                withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                                    selectedCourt = court
+                                    Task {
+                                        do {
+                                            guard let courtID = court.id else {
+                                                return
+                                            }
+                                            try await gameViewModel.getGames(for: courtID)
+                                        } catch {
+                                            // Handle error
                                         }
                                     }
                                 }
-                        )
-
+                            }
+                        }
+                    }
+                }
+                .sheet(isPresented: $showAddCourt) {
+                    NewCourtView()
+                }
+                .onAppear {
+                    Task {
+                        do {
+                            try await model.getCourts()
+                            try await gameViewModel.getGames()
+                        } catch {
+                            // Handle error
+                        }
+                    }
+                }
+            } else {
+                VStack {
+                    image(from: selectedCourt?.image)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(maxWidth: .infinity)
+                    
+                    VStack(alignment: .leading) {
+                        Text(selectedCourt!.name)
+                            .font(.largeTitle.weight(.bold))
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .foregroundColor(.black)
+                        
+                        Spacer().frame(height: 10)
+                        
+                        if let selectedCourtDescription = selectedCourt?.description {
+                            Text(selectedCourtDescription)
+                                .foregroundColor(.gray)
+                                .lineLimit(nil)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                        
+                        // Orange block with "King of The Court:" and a name
+                        ZStack(alignment: .leading) {
+                            Color.orange
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 50) // Adjust the height as needed
+                                .cornerRadius(12)
+                            HStack {
+                                Text("King of The Court:")
+                                    .font(.headline)
+                                    .foregroundColor(.white)
+                                    .padding(.horizontal, 16)
+                                    .padding(.vertical, 8)
+                                Text("King: \(selectedCourt?.teamWithMostWins ?? "")")
+                                            .font(.subheadline)
+                                            .foregroundColor(.white)
+                                            .padding(.horizontal, 16)
+                                            .padding(.vertical, 8)
+                            }
+                            .padding(.horizontal, 16)
+                        }
+                        
+                        
+                        HStack {
+                            Text("Games")
+                                .font(.largeTitle.bold())
+                                .foregroundColor(.black)
+                            Spacer()
+                            
+                            Button(action: {
+                                showAddGame.toggle()
+                            }) {
+                                Image(systemName: "plus")
+                                    .foregroundColor(.white)
+                                    .padding(10)
+                                    .background(Color.blue)
+                                    .clipShape(Circle())
+                            }
+                        }
+                        
+                        LazyVStack {
+                            ForEach(gameViewModel.games) { game in
+                                GameRow(game: game)
+                            }
+                        }
+                        .padding(.top)
+                    }
+                    .padding()
+                    Spacer()
+                }
+                .sheet(isPresented: $showAddGame) {
+                    NewGameView(associatedCourt: selectedCourt)
+                }
+                .background(Color.white)
+                .cornerRadius(15)
+                .shadow(color: Color.black.opacity(0.15), radius: 10, x: 0, y: 10)
+                .padding(10)
+                .scaleEffect(scale)
+                .onAppear {
+                    withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                        scale = 1
+                    }
+                }
+                .offset(y: dragOffset)
+                .gesture(
+                    DragGesture()
+                        .updating($dragOffset) { value, state, _ in
+                            state = value.translation.height
+                        }
+                        .onEnded { value in
+                            if value.translation.height > 100 {
+                                withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                                    scale = 0
+                                    selectedCourt = nil
+                                }
+                            }
+                        }
+                )
+            }
         }
     }
 }
@@ -243,6 +265,7 @@ struct GameRow: View {
             Text(game.teamOne ?? "Unknown Team")
                 .font(.headline)
                 .foregroundColor(.blue)
+                .padding(.horizontal, 16)
             
             Spacer() // pushes text apart
             
@@ -259,6 +282,7 @@ struct GameRow: View {
             Text(game.teamTwo ?? "Unknown Team")
                 .font(.headline)
                 .foregroundColor(.red)
+                .padding(.horizontal, 16)
         }
         .frame(maxWidth: .infinity, minHeight: 50) // stretch across screen
         .background(Color.gray.opacity(0.2)) // background of the box
@@ -341,7 +365,6 @@ struct NewCourtView: View {
                         try data?.write(to: tempURL)
                         return CKAsset(fileURL: tempURL)
                     } catch {
-                        print("Error saving image to temporary directory: \(error)")
                         return nil
                     }
                 }()
@@ -356,8 +379,6 @@ struct NewCourtView: View {
                         courtDescription = ""
                         selectedUIImage = nil
                     } catch {
-                        print("Error adding new court: \(error)")
-                        // Handle the error, possibly with an alert to the user.
                     }
                 }
             }
@@ -461,7 +482,6 @@ struct NewGameView: View {
                 Task {
                     do {
                         guard let scoreOneInt = Int64(scoreOne), let scoreTwoInt = Int64(scoreTwo) else {
-                            print("Invalid scores entered!")
                             return
                         }
                         
@@ -485,9 +505,7 @@ struct NewGameView: View {
                         teamTwo = ""
                         scoreTwo = ""
                         
-                        print("Game added successfully!")
                     } catch {
-                        print("Failed to add game: \(error)")
                     }
                 }
             }
@@ -499,8 +517,8 @@ struct NewGameView: View {
             .cornerRadius(8)
             .frame(maxWidth: .infinity, alignment: .center)
         }.preferredColorScheme(.light)
-        .background(Color.white)
-        .padding()
+            .background(Color.white)
+            .padding()
     }
 }
 
@@ -538,6 +556,7 @@ struct ImagePicker: UIViewControllerRepresentable {
         }
     }
 }
+
 
 
 //  Helper for image asset conversion

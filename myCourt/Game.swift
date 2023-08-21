@@ -20,6 +20,20 @@ struct Game: Identifiable {
     var date: Date
     var CourtRef: CKRecord.Reference?
 
+    // Computed property to determine the winner based on scores
+        var winner: String? {
+            guard let teamOne = teamOne, let teamTwo = teamTwo, let scoreOne = scoreOne, let scoreTwo = scoreTwo else {
+                return nil
+            }
+            
+            if scoreOne > scoreTwo {
+                return teamOne
+            } else if scoreTwo > scoreOne {
+                return teamTwo
+            } else {
+                return nil // It's a tie
+            }
+        }
 }
 
 extension Game {

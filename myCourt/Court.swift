@@ -13,6 +13,8 @@ struct Court {
     var name: String
     var image: CKAsset? // Assuming the image is stored as a CKAsset
     var description: String?
+    var teamWins: [String: Int] = [:] // Dictionary to store team wins
+    var teamWithMostWins: String = ""
 }
 
 extension Court {
