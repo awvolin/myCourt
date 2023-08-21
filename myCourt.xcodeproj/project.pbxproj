@@ -14,7 +14,6 @@
 		2C2EB1792A437381009D33E3 /* myCourtTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C2EB1782A437381009D33E3 /* myCourtTests.swift */; };
 		2C2EB1832A437381009D33E3 /* myCourtUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C2EB1822A437381009D33E3 /* myCourtUITests.swift */; };
 		2C2EB1852A437381009D33E3 /* myCourtUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C2EB1842A437381009D33E3 /* myCourtUITestsLaunchTests.swift */; };
-		2C2EB1942A44C625009D33E3 /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C2EB1932A44C625009D33E3 /* LoginViewModel.swift */; };
 		2C41FB582A7EC27300024414 /* CourtViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C41FB572A7EC27300024414 /* CourtViewModel.swift */; };
 		2C41FB5A2A7EC39900024414 /* Court.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C41FB592A7EC39900024414 /* Court.swift */; };
 		2C6DC6772A93E3C4009B7409 /* TCM.TTF in Resources */ = {isa = PBXBuildFile; fileRef = 2C6DC6762A93E3C4009B7409 /* TCM.TTF */; };
@@ -51,7 +50,6 @@
 		2C2EB17E2A437381009D33E3 /* myCourtUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = myCourtUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C2EB1822A437381009D33E3 /* myCourtUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = myCourtUITests.swift; sourceTree = "<group>"; };
 		2C2EB1842A437381009D33E3 /* myCourtUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = myCourtUITestsLaunchTests.swift; sourceTree = "<group>"; };
-		2C2EB1932A44C625009D33E3 /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		2C2EB1952A4A3B17009D33E3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		2C41FB562A7EBC1A00024414 /* myCourtRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = myCourtRelease.entitlements; sourceTree = "<group>"; };
 		2C41FB572A7EC27300024414 /* CourtViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourtViewModel.swift; sourceTree = "<group>"; };
@@ -114,7 +112,6 @@
 				2C6DC6762A93E3C4009B7409 /* TCM.TTF */,
 				2C2EB1662A437380009D33E3 /* myCourtApp.swift */,
 				2C2EB1682A437380009D33E3 /* ContentView.swift */,
-				2C2EB1932A44C625009D33E3 /* LoginViewModel.swift */,
 				2C41FB572A7EC27300024414 /* CourtViewModel.swift */,
 				2C8ABF192A806BDD00DB20EA /* GameViewModel.swift */,
 				2C41FB592A7EC39900024414 /* Court.swift */,
@@ -287,7 +284,6 @@
 				2C41FB5A2A7EC39900024414 /* Court.swift in Sources */,
 				2C0B225F2A57A8D10091E92A /* ContentView.swift in Sources */,
 				2C41FB582A7EC27300024414 /* CourtViewModel.swift in Sources */,
-				2C2EB1942A44C625009D33E3 /* LoginViewModel.swift in Sources */,
 				2C8ABF1A2A806BDD00DB20EA /* GameViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
