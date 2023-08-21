@@ -176,20 +176,21 @@ struct LoggedInView: View {
                         ZStack(alignment: .leading) {
                             Color.orange
                                 .frame(maxWidth: .infinity)
-                                .frame(height: 50) // Adjust the height as needed
+                                .frame(height: 80) // Adjust the height as needed
                                 .cornerRadius(12)
                             HStack {
                                 Text("King of The Court:")
-                                    .font(.headline)
+                                    .font(.system(size: 20, weight: .bold)) // Replace 20 with the desired font size
                                     .foregroundColor(.white)
                                     .padding(.horizontal, 16)
                                     .padding(.vertical, 8)
-                                Text("King: \(selectedCourt?.teamWithMostWins ?? "")")
-                                            .font(.subheadline)
-                                            .foregroundColor(.white)
-                                            .padding(.horizontal, 16)
-                                            .padding(.vertical, 8)
+                                Text("\(findMostFrequentWinner() ?? "")")
+                                    .font(.system(size: 20, weight: .bold)) // Replace 16 with the desired font size
+                                    .foregroundColor(.white)
+                                    .padding(.vertical, 8)
                             }
+
+
                             .padding(.horizontal, 16)
                         }
                         
@@ -251,6 +252,22 @@ struct LoggedInView: View {
                 )
             }
         }
+    }
+    
+    func findMostFrequentWinner() -> String? {
+        var winnerCounts: [String: Int] = [:]
+        
+        for game in gameViewModel.games {
+            if let winner = game.winner, game.CourtRef?.recordID == selectedCourt?.id {
+                winnerCounts[winner, default: 0] += 1
+            }
+        }
+        
+        if let mostFrequentWinner = winnerCounts.max(by: { $0.value < $1.value })?.key {
+            return mostFrequentWinner
+        }
+        
+        return nil // No winner found or no games available
     }
 }
 

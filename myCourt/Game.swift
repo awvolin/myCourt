@@ -9,6 +9,7 @@ enum GameRecordKeys: String {
     case ScoreTwo
     case Date
     case CourtRef
+    case Winner
 }
 
 struct Game: Identifiable {
@@ -43,12 +44,10 @@ extension Game {
         let scoreOne = record[GameRecordKeys.ScoreOne.rawValue] as? Int64
         let scoreTwo = record[GameRecordKeys.ScoreTwo.rawValue] as? Int64
         guard let date = record[GameRecordKeys.Date.rawValue] as? Date else { return nil }
-        
         let CourtRef = record[GameRecordKeys.CourtRef.rawValue] as? CKRecord.Reference
-
-
-        self.init(id: record.recordID, teamOne: teamOne, teamTwo: teamTwo, scoreOne: scoreOne, scoreTwo: scoreTwo, date: date, CourtRef: CourtRef)
-
+        let winner = record[GameRecordKeys.Winner.rawValue] as? String // Get the winner
+        
+        self.init(id: record.recordID, teamOne: teamOne, teamTwo: teamTwo, scoreOne: scoreOne, scoreTwo: scoreTwo, date: date, CourtRef: CourtRef) // Include winner
     }
 }
 
@@ -63,7 +62,8 @@ extension Game {
         if let courtReference = CourtRef {
             record[GameRecordKeys.CourtRef.rawValue] = courtReference
         }
-
+        record[GameRecordKeys.Winner.rawValue] = winner as? CKRecordValue // Include winner
+        
         return record
     }
 }
