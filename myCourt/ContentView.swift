@@ -189,8 +189,8 @@ struct LoggedInView: View {
                                     .foregroundColor(.white)
                                     .padding(.vertical, 8)
                             }
-
-
+                            
+                            
                             .padding(.horizontal, 16)
                         }
                         
@@ -212,7 +212,7 @@ struct LoggedInView: View {
                             }
                         }
                         
-                        LazyVStack {
+                        ScrollView {
                             ForEach(gameViewModel.games) { game in
                                 GameRow(game: game)
                             }
@@ -272,47 +272,56 @@ struct LoggedInView: View {
 }
 
 
-
 struct GameRow: View {
     let game: Game
     
     var body: some View {
-        HStack(spacing: 16) {
-            // Team One's Name
-            Text(game.teamOne ?? "Unknown Team")
-                .font(.headline)
-                .foregroundColor(.blue)
-                .padding(.horizontal, 16)
-            
-            Spacer() // pushes text apart
-            
-            // Scores with a dash between them
-            VStack {
-                Text(scoreRepresentation)
-                    .font(.title2)
+        ZStack{
+            HStack(spacing: 16) {
+                // Team One's Score
+                Rectangle()
+                    .fill(Color.clear)
+                    .frame(width: 45)
+                Text(game.teamOne ?? "Unknown Team")
+                    .font(.headline)
                     .foregroundColor(.black)
+                
+                Spacer()
+                
+                Text(game.teamTwo ?? "Unknown Team")
+                    .font(.headline)
+                    .foregroundColor(.black)
+                    .multilineTextAlignment(.trailing)
+                
+                Rectangle()
+                    .fill(Color.clear)
+                    .frame(width: 45)
+                
             }
-            
-            Spacer() // pushes text apart
-            
-            // Team Two's Name
-            Text(game.teamTwo ?? "Unknown Team")
-                .font(.headline)
-                .foregroundColor(.red)
-                .padding(.horizontal, 16)
+            HStack(spacing: 16) {
+                Text("\(game.scoreOne ?? 0)")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                    .foregroundColor(.blue)
+                    .padding(.horizontal, 8)
+                
+                Spacer()
+                
+                Text("\(game.scoreTwo ?? 0)")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                    .foregroundColor(.red)
+                    .padding(.horizontal, 8)
+            }
         }
         .frame(maxWidth: .infinity, minHeight: 50) // stretch across screen
         .background(Color.gray.opacity(0.2)) // background of the box
         .cornerRadius(8) // rounded corners
         .padding(.vertical, 4) // space between boxes
     }
-    
-    var scoreRepresentation: String {
-        let scoreOne = game.scoreOne ?? 0
-        let scoreTwo = game.scoreTwo ?? 0
-        return "\(scoreOne) - \(scoreTwo)"
-    }
 }
+
+
 
 struct NewCourtView: View {
     @State private var courtName: String = ""
