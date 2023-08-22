@@ -223,7 +223,7 @@ struct LoggedInView: View {
                     Spacer()
                 }
                 .sheet(isPresented: $showAddGame) {
-                    NewGameView(associatedCourt: selectedCourt)
+                    NewGameView(associatedCourt: selectedCourt, isAddingGame: true)
                 }
                 .background(Color.white)
                 .cornerRadius(15)
@@ -328,12 +328,16 @@ struct NewCourtView: View {
     @State private var courtDescription: String = ""
     @State private var showingImagePicker: Bool = false
     @State private var selectedUIImage: UIImage? = nil
+    @State private var feedbackMessage: String = ""
+    @State private var isShowingAlert = false
     var courtImage: Image? {
         if let uiImage = selectedUIImage {
             return Image(uiImage: uiImage)
         }
         return nil
     }
+
+    @ObservedObject var courtVM = CourtViewModel()
     
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -396,29 +400,30 @@ struct NewCourtView: View {
                 }()
                 
                 let newCourt = Court(name: courtName, image: asset, description: courtDescription)
-                
-                Task {
-                    do {
-                        try await courtVM.addCourt(court: newCourt)
-                        // Optionally, reset fields and UI states after successful addition
-                        courtName = ""
-                        courtDescription = ""
-                        selectedUIImage = nil
-                    } catch {
-                    }
-                }
+
+                                Task {
+                                    do {
+                                        try await courtVM.addCourt(court: newCourt)
+                                        feedbackMessage = "Court added successfully"
+                                        isShowingAlert = true
+                                        // Optionally, reset fields and UI states after successful addition
+                                        courtName = ""
+                                        courtDescription = ""
+                                        selectedUIImage = nil
+                                    } catch {
+                                        feedbackMessage = "Error adding court"
+                                        isShowingAlert = true
+                                    }
+                                }
             }
             .padding()
             .background(Color.blue)
             .foregroundColor(.white)
             .cornerRadius(8)
             .frame(maxWidth: .infinity, alignment: .center)
-            
-            .padding()
-            .background(Color.blue)
-            .foregroundColor(.white)
-            .cornerRadius(8)
-            .frame(maxWidth: .infinity, alignment: .center)
+        }
+        .alert(isPresented: $isShowingAlert) {
+            Alert(title: Text("Court Status"), message: Text(feedbackMessage), dismissButton: .default(Text("OK")))
         }
         .background(Color.white)
         .padding()
@@ -436,6 +441,10 @@ struct NewGameView: View {
     @State private var scoreOne: String = ""
     @State private var teamTwo: String = ""
     @State private var scoreTwo: String = ""
+    @State private var feedbackMessage: String = ""
+    @State public var isAddingGame: Bool
+    @State private var isShowingAlert = false
+
     
     @ObservedObject var gameViewModel = GameViewModel()
     
@@ -523,18 +532,33 @@ struct NewGameView: View {
                                            CourtRef: courtReference)
                         
                         // Save the game to the database
-                        try await gameViewModel.addGame(game: newGame)
-                        
-                        // Optional: Reset the fields
-                        teamOne = ""
-                        scoreOne = ""
-                        teamTwo = ""
-                        scoreTwo = ""
-                        
-                    } catch {
-                    }
-                }
-            }
+                        do {
+                                        try await gameViewModel.addGame(game: newGame)
+                                        
+                                        // Optional: Reset the fields
+                                        teamOne = ""
+                                        scoreOne = ""
+                                        teamTwo = ""
+                                        scoreTwo = ""
+                                        
+                                        // Provide feedback to the user
+                                        feedbackMessage = "Game added successfully"
+                                        
+                                        // Show the alert
+                                        isShowingAlert = true
+                                        
+                                        // Close the new game screen
+                                        isAddingGame = false
+                                    } catch {
+                                        feedbackMessage = "Error adding game"
+                                        
+                                        // Show the alert
+                                        isShowingAlert = true
+                                    }
+                                }
+                            }
+                        }
+
             
             
             .padding()
@@ -545,6 +569,9 @@ struct NewGameView: View {
         }.preferredColorScheme(.light)
             .background(Color.white)
             .padding()
+            .alert(isPresented: $isShowingAlert) {
+                        Alert(title: Text("Game Status"), message: Text(feedbackMessage), dismissButton: .default(Text("OK")))
+                    }
     }
 }
 
