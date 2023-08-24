@@ -411,7 +411,7 @@ struct NewCourtView: View {
                                         courtDescription = ""
                                         selectedUIImage = nil
                                     } catch {
-                                        feedbackMessage = "Error adding court"
+                                        feedbackMessage = "Error adding court - Sign into iCloud on this device."
                                         isShowingAlert = true
                                     }
                                 }
@@ -550,7 +550,7 @@ struct NewGameView: View {
                                         // Close the new game screen
                                         isAddingGame = false
                                     } catch {
-                                        feedbackMessage = "Error adding game"
+                                        feedbackMessage = "Error adding game  - Sign into iCloud on this device."
                                         
                                         // Show the alert
                                         isShowingAlert = true
